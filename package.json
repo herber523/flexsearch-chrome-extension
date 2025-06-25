@@ -1,0 +1,17 @@
+{
+  "name": "flexsearch-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension using FlexSearch and IndexedDB",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "flexsearch": "^0.7.31",
+    "idb": "^7.1.1"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}

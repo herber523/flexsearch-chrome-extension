@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "FlexSearch Finder",
+  "version": "1.0",
+  "description": "使用 FlexSearch + IndexedDB 的全文搜尋工具",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "FlexSearch Finder",
+    "default_popup": "src/popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "contentScript.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
