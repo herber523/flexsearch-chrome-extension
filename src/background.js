@@ -1,6 +1,7 @@
 // background.js - 處理擴充功能的背景任務
 import FlexSearch from 'flexsearch';
 import { openDB } from 'idb';
+import { tokenizer } from './tokenizer.js';
 
 // 初始化資料庫
 let db;
@@ -25,14 +26,10 @@ async function initializeDB() {
       id: 'id',
       index: ['title', 'content', 'excerpt']
     },
-    tokenize: 'full',
-    encode: false,
-    tokenize: function (str) {
-      if (!str) return [];
-      const chineseChars = str.match(/[\u4e00-\u9fa5]/g) || [];
-      const englishWords = str.match(/[a-zA-Z0-9]+/g) || [];
-      return [...chineseChars, ...englishWords];
-    }
+    encode: tokenizer,
+    tokenize: 'forward',
+    cache: 100,
+    async: false
   });
 
   // 載入現有資料到索引
