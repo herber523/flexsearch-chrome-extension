@@ -42,64 +42,6 @@ async function loadAllPages() {
   console.log('main.js: 已載入', allPages.length, '筆瀏覽記錄到搜尋索引');
 }
 
-async function initializeExampleData() {
-  const count = await db.count('pages');
-  if (count === 0) {
-    const currentTime = new Date().toISOString();
-    const examplePages = [
-      {
-        content: "京都には美しいお寺があります。東京タワーや秋葉原も人気の観光スポットです。日本料理も素晴らしく、寿司やラーメンは世界中で愛されています。",
-        excerpt: "探索日本的美麗寺廟和熱門觀光景點",
-        url: "https://example.com/japan-travel",
-        siteName: "example.com",
-        timestamp: currentTime,
-        visitCount: 2,
-        wordCount: 150,
-        readingTime: 2
-      },
-      {
-        title: "環保議題討論",
-        content: "Global warming 對海洋造成嚴重影響。我們必須採取緊急行動保護地球環境，減少碳排放，推廣再生能源。每個人都應該為環境保護盡一份力。",
-        excerpt: "全球暖化和環境保護的重要性",
-        url: "https://example.com/environmental-issues",
-        siteName: "example.com",
-        timestamp: currentTime,
-        visitCount: 1,
-        wordCount: 200,
-        readingTime: 3
-      },
-      {
-        title: "程式設計學習筆記",
-        content: "記錄學習過程是很有幫助的。程式設計、語言學習、知識管理等都需要良好的筆記方法。JavaScript、Python、React 都是很受歡迎的技術。",
-        excerpt: "分享程式設計和學習的經驗心得",
-        url: "https://example.com/study-notes",
-        siteName: "example.com",
-        timestamp: currentTime,
-        visitCount: 3,
-        wordCount: 180,
-        readingTime: 2
-      },
-      {
-        title: "美食探索之旅",
-        content: "台灣小吃非常豐富多樣，從夜市美食到精緻餐廳都有。牛肉麵、珍珠奶茶、小籠包都是必嚐美食。每個城市都有獨特的在地料理。",
-        excerpt: "台灣美食文化的深度探索",
-        url: "https://example.com/food-journey",
-        siteName: "example.com",
-        timestamp: currentTime,
-        visitCount: 1,
-        wordCount: 120,
-        readingTime: 1
-      }
-    ];
-
-
-    for (const page of examplePages) {
-      await db.add('pages', page);
-    }
-    console.log('main.js: 範例資料初始化完成');
-  }
-}
-
 function highlightText(text, query) {
   if (!text) return '';
   const words = query.trim().split(/\s+/).filter(w => w.length > 0);
@@ -183,7 +125,6 @@ function renderResults(query) {
 
 async function main() {
   await initializeDB();
-  await initializeExampleData();
   await loadAllPages();
   const searchInput = document.getElementById('search');
   if (!searchInput) {
