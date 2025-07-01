@@ -7,36 +7,39 @@ let db;
 let searchIndex;
 
 async function initializeDB() {
-  db = await openDB('browsing-history-db', 2, { // 更新版本號以觸發升級
+  db = await openDB('browsing-history-db', 3, {
     upgrade(db, oldVersion, newVersion) {
-      if (oldVersion < 2) {
-        // 舊版本才需執行以下操作
-        if (db.objectStoreNames.contains('pages')) {
-          db.deleteObjectStore('pages');
-        }
-        const pagesStore = db.createObjectStore('pages', { keyPath: 'id', autoIncrement: true });
-        pagesStore.createIndex('url', 'url', { unique: false });
+      // 每次升級都安全重建 pages store
+      if (db.objectStoreNames.contains('pages')) {
+        db.deleteObjectStore('pages');
       }
+      const pagesStore = db.createObjectStore('pages', { keyPath: 'id', autoIncrement: true });
+      pagesStore.createIndex('url', 'url', { unique: false });
+      pagesStore.createIndex('timestamp', 'timestamp', { unique: false });
     }
   });
 
-  // 初始化搜尋索引
+  // 初始化搜尋索引，與 main.js 保持一致
   searchIndex = new FlexSearch.Document({
     document: {
       id: 'id',
-      index: ['title', 'content', 'excerpt'] // 增加摘要作為索引欄位
+      index: ['title', 'content', 'excerpt']
     },
     tokenize: 'full',
     encode: false,
     tokenize: function (str) {
-      return str.replace(/[\x00-\x7F]/g, "").split("")
-        .concat(str.split(/[^a-zA-Z0-9]/));
+      if (!str) return [];
+      const chineseChars = str.match(/[\u4e00-\u9fa5]/g) || [];
+      const englishWords = str.match(/[a-zA-Z0-9]+/g) || [];
+      return [...chineseChars, ...englishWords];
     }
   });
 
   // 載入現有資料到索引
   const allPages = await db.getAll('pages');
   for (const page of allPages) {
+    if (!page.title) page.title = '(無標題)';
+    if (!page.excerpt) page.excerpt = '';
     searchIndex.add(page);
   }
   console.log(`已載入 ${allPages.length} 筆瀏覽記錄到索引`);
@@ -58,7 +61,12 @@ async function savePage(pageData) {
       const existingPage = existingPages[0];
       existingPage.visitCount = (existingPage.visitCount || 1) + 1;
       existingPage.timestamp = new Date().toISOString();
-
+      existingPage.content = pageData.content || existingPage.content;
+      existingPage.title = pageData.title || existingPage.title || '(無標題)';
+      existingPage.excerpt = pageData.excerpt || existingPage.excerpt || '';
+      existingPage.siteName = pageData.siteName || existingPage.siteName || '';
+      existingPage.wordCount = pageData.wordCount || existingPage.wordCount || 0;
+      existingPage.readingTime = pageData.readingTime || existingPage.readingTime || 0;
       await db.put('pages', existingPage);
       searchIndex.update(existingPage);
       return { success: true, page: existingPage };
@@ -66,15 +74,19 @@ async function savePage(pageData) {
       // 新增記錄
       const timestamp = new Date().toISOString();
       const newPage = {
-        ...pageData,
+        title: pageData.title || '(無標題)',
+        content: pageData.content || '',
+        excerpt: pageData.excerpt || '',
+        url: pageData.url,
+        siteName: pageData.siteName || '',
+        wordCount: pageData.wordCount || 0,
+        readingTime: pageData.readingTime || 0,
         timestamp,
         visitCount: 1
       };
-
       const id = await db.add('pages', newPage);
       newPage.id = id;
       searchIndex.add(newPage);
-
       return { success: true, page: newPage };
     }
   } catch (error) {
