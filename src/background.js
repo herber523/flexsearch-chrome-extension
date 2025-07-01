@@ -109,3 +109,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.create({ url: chrome.runtime.getURL('src/index.html') });
 });
+
+// 自動擷取每次瀏覽的網頁內容（僅在 autoCaptureEnabled 時啟用）
+chrome.webNavigation.onCompleted.addListener(async (details) => {
+  chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
+    if (!result.autoCaptureEnabled) return;
+    // 僅處理主框架、排除特殊頁面
+    if (details.frameId !== 0) {
+      console.debug('[AutoCapture] Skip subframe:', details);
+      return;
+    }
+    chrome.tabs.get(details.tabId, (tab) => {
+      if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+        console.debug('[AutoCapture] Skip special/internal page:', tab && tab.url);
+        return;
+      }
+      console.debug('[AutoCapture] Injecting contentScript into:', tab.url);
+      // 注入 contentScript 並取得內容
+      chrome.scripting.executeScript({
+        target: { tabId: details.tabId },
+        files: ['contentScript.js']
+      }, () => {
+        chrome.scripting.executeScript({
+          target: { tabId: details.tabId },
+          func: () => window.parsePageContent && window.parsePageContent(),
+        }, (results) => {
+          console.debug('[AutoCapture] contentScript result:', results);
+          if (results && results[0] && results[0].result && results[0].result.content) {
+            savePage(results[0].result);
+            console.debug('[AutoCapture] Saved pageData directly:', results[0].result.url);
+          } else {
+            console.debug('[AutoCapture] No valid content extracted:', results);
+          }
+        });
+      });
+    });
+  });
+}, { url: [{ schemes: ['http', 'https'] }] });

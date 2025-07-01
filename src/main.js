@@ -116,26 +116,29 @@ function highlightText(text, query) {
 function renderResults(query) {
   const container = document.getElementById('results');
   if (!container) return;
+  let matched;
   if (!query || query.trim().length === 0) {
-    container.innerHTML = `<div class="empty-state"><p>開始輸入以搜尋您的索引內容</p><p>目前共有 ${allPages.length} 筆記錄</p></div>`;
-    return;
+    // 顯示所有資料卡片
+    matched = allPages.slice();
+  } else {
+    const results = index.search(query, { enrich: true });
+    const resultIds = new Set();
+    if (Array.isArray(results)) {
+      results.forEach(group => {
+        if (group.result && Array.isArray(group.result)) {
+          group.result.forEach(doc => resultIds.add(doc));
+        }
+      });
+    }
+    matched = allPages.filter(page => resultIds.has(page.id));
   }
-  const results = index.search(query, { enrich: true });
-  const resultIds = new Set();
-  if (Array.isArray(results)) {
-    results.forEach(group => {
-      if (group.result && Array.isArray(group.result)) {
-        group.result.forEach(doc => resultIds.add(doc));
-      }
-    });
-  }
-  const matched = allPages.filter(page => resultIds.has(page.id));
   container.innerHTML = '';
   if (matched.length === 0) {
     container.innerHTML = `<div class="empty-state"><p>沒有找到符合 "${query}" 的結果</p><p>嘗試使用不同的關鍵字或檢查拼寫</p><p>目前共有 ${allPages.length} 筆記錄可供搜尋</p></div>`;
     return;
   }
-  matched.sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0));
+  // 依照最新瀏覽時間排序（由新到舊）
+  matched.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   matched.forEach(page => {
     const div = document.createElement('div');
     div.className = 'result-item';
@@ -194,7 +197,13 @@ async function main() {
     searchInput.value = queryParam;
     renderResults(queryParam);
   } else {
+    // 預設顯示所有網頁
     renderResults('');
+    // 讓搜尋框為空時也顯示所有資料
+    searchInput.addEventListener('input', (e) => {
+      renderResults(e.target.value);
+    });
+    return;
   }
   searchInput.addEventListener('input', (e) => {
     renderResults(e.target.value);
