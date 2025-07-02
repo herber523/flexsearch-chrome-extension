@@ -142,6 +142,15 @@ function openSearchPage() {
 }
 
 /**
+ * 開啟設定頁面
+ */
+function openSettingsPage() {
+  chrome.tabs.create({ 
+    url: chrome.runtime.getURL('settings/settings.html') 
+  });
+}
+
+/**
  * 初始化彈出視窗功能
  */
 function initializePopup() {
@@ -173,24 +182,10 @@ function initializePopup() {
     });
   }
 
-  // 自動擷取模式開關
-  const autoCaptureToggle = document.getElementById('auto-capture-toggle');
-  if (autoCaptureToggle) {
-    // 載入當前設定
-    chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
-      autoCaptureToggle.checked = !!result.autoCaptureEnabled;
-    });
-    
-    // 監聽設定變更
-    autoCaptureToggle.addEventListener('change', (e) => {
-      chrome.storage.local.set({ 
-        autoCaptureEnabled: e.target.checked 
-      });
-      
-      // 顯示狀態訊息
-      const message = e.target.checked ? '自動捕獲已開啟' : '自動捕獲已關閉';
-      showStatusMessage(message, 'success');
-    });
+  // 開啟設定頁面按鈕
+  const settingsBtn = document.getElementById('open-settings');
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', openSettingsPage);
   }
 }
 

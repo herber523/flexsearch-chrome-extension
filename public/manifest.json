@@ -27,11 +27,12 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "contentScript.js"
+        "content/contentScript.js"
       ],
       "matches": [
         "<all_urls>"
       ]
     }
-  ]
+  ],
+  "options_page": "settings/settings.html"
 }

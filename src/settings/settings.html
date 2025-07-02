@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlexSearch Finder - 設定</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f7;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      padding: 25px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-description {
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .domain-input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #0077ff;
+      box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #0077ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #0066dd;
+    }
+
+    .secondary-btn {
+      background-color: #6c757d;
+    }
+
+    .secondary-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .danger-btn {
+      background-color: #dc3545;
+    }
+
+    .danger-btn:hover {
+      background-color: #c82333;
+    }
+
+    .domain-list {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      min-height: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 15px;
+      background-color: #fafafa;
+    }
+
+    .domain-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #eee;
+    }
+
+    .domain-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .domain-name {
+      font-family: 'Monaco', 'Consolas', monospace;
+      color: #333;
+    }
+
+    .remove-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background-color: #c82333;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 40px 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0077ff;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #0077ff;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>設定</h1>
+      <p class="subtitle">管理 FlexSearch Finder 的偏好設定</p>
+    </header>
+
+    <div id="success-message" class="success-message"></div>
+    <div id="error-message" class="error-message"></div>
+
+    <!-- Auto Capture Settings -->
+    <div class="section">
+      <h2 class="section-title">🚀 自動擷取設定</h2>
+      <p class="section-description">控制自動擷取網頁內容的行為</p>
+      
+      <div class="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="auto-capture-toggle">
+          <span class="slider"></span>
+        </label>
+        <label for="auto-capture-toggle" style="cursor: pointer;">啟用自動擷取模式</label>
+      </div>
+    </div>
+
+    <!-- Domain Blacklist -->
+    <div class="section">
+      <h2 class="section-title">🚫 網域黑名單</h2>
+      <p class="section-description">
+        設定不要自動擷取內容的網域名稱。支援完整網域 (如: example.com) 或子網域 (如: *.example.com)
+      </p>
+
+      <div class="domain-input-container">
+        <input 
+          type="text" 
+          id="domain-input" 
+          placeholder="輸入網域名稱，例如: example.com 或 *.google.com"
+        >
+        <button id="add-domain-btn">新增網域</button>
+      </div>
+
+      <div class="domain-list" id="domain-list">
+        <div class="empty-state" id="empty-state">
+          尚未新增任何網域到黑名單
+        </div>
+      </div>
+    </div>
+
+    <!-- Database Management -->
+    <div class="section">
+      <h2 class="section-title">💾 資料庫管理</h2>
+      <p class="section-description">查看儲存統計資訊並管理本地資料</p>
+
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="total-pages">-</div>
+          <div class="stat-label">總頁面數</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="total-size">-</div>
+          <div class="stat-label">約略大小</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="last-updated">-</div>
+          <div class="stat-label">最後更新</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button id="refresh-stats-btn" class="secondary-btn">重新整理統計</button>
+        <button id="export-data-btn" class="secondary-btn">匯出資料</button>
+        <button id="clear-db-btn" class="danger-btn">清空資料庫</button>
+      </div>
+    </div>
+
+    <!-- Back to Search -->
+    <div class="section">
+      <h2 class="section-title">🔍 返回搜尋</h2>
+      <button id="back-to-search-btn" class="secondary-btn">返回搜尋頁面</button>
+    </div>
+  </div>
+
+  <script type="module" src="settings.js"></script>
+</body>
+</html>
