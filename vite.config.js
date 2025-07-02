@@ -8,10 +8,11 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        background: resolve(__dirname, 'src/background.js'),
-        popup: resolve(__dirname, 'src/popup.js'),
-        main: resolve(__dirname, 'src/main.js'),
-        contentScript: resolve(__dirname, 'src/contentScript.js')
+        // 更新為新的目錄結構
+        background: resolve(__dirname, 'src/background/background.js'),
+        popup: resolve(__dirname, 'src/popup/popup.js'),
+        main: resolve(__dirname, 'src/search/main.js'),
+        contentScript: resolve(__dirname, 'src/content/contentScript.js')
       },
       output: {
         entryFileNames: '[name].js',
@@ -22,19 +23,26 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'copy-html',
+      name: 'copy-files',
       writeBundle() {
         const fs = require('fs');
-        const path = require('path');
 
-        if (!fs.existsSync('dist/src')) {
-          fs.mkdirSync('dist/src', { recursive: true });
-        }
+        // 創建必要的目錄結構
+        const dirs = ['dist/popup', 'dist/search'];
+        dirs.forEach(dir => {
+          if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+          }
+        });
 
-        fs.copyFileSync('src/popup.html', 'dist/src/popup.html');
-        fs.copyFileSync('src/index.html', 'dist/src/index.html');
+        // 複製 HTML 檔案到對應目錄
+        fs.copyFileSync('src/popup/popup.html', 'dist/popup/popup.html');
+        fs.copyFileSync('src/search/index.html', 'dist/search/index.html');
 
+        // 複製 manifest.json
         fs.copyFileSync('public/manifest.json', 'dist/manifest.json');
+        
+        console.log('✅ 檔案複製完成');
       }
     }
   ]
