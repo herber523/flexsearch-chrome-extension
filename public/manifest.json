@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FlexSearch Finder",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "使用 FlexSearch + IndexedDB 的全文搜尋工具",
   "permissions": [
     "storage",

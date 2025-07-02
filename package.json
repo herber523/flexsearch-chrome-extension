@@ -4,7 +4,9 @@
   "description": "Chrome extension using FlexSearch and IndexedDB",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "package": "npm run build && cd dist && zip -r ../flexsearch-chrome-extension.zip .",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",

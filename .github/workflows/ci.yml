@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Check build output
+        run: |
+          echo "檢查建置檔案..."
+          ls -la dist/
+          
+          # 檢查必要檔案是否存在
+          if [ ! -f "dist/manifest.json" ]; then
+            echo "錯誤: manifest.json 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/background.js" ]; then
+            echo "錯誤: background.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/popup.js" ]; then
+            echo "錯誤: popup.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/contentScript.js" ]; then
+            echo "錯誤: contentScript.js 不存在"
+            exit 1
+          fi
+          
+          echo "✅ 所有必要檔案都存在"
+
+      - name: Validate manifest
+        run: |
+          echo "驗證 manifest.json..."
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('dist/manifest.json', 'utf8'));
+            
+            // 檢查必要欄位
+            const required = ['manifest_version', 'name', 'version', 'description'];
+            for (const field of required) {
+              if (!manifest[field]) {
+                console.error(\`錯誤: manifest.json 缺少 \${field} 欄位\`);
+                process.exit(1);
+              }
+            }
+            
+            console.log('✅ manifest.json 格式正確');
+            console.log(\`擴充功能名稱: \${manifest.name}\`);
+            console.log(\`版本: \${manifest.version}\`);
+          "
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension-build
+          path: dist/
