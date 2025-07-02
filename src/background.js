@@ -110,39 +110,207 @@ chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.create({ url: chrome.runtime.getURL('src/index.html') });
 });
 
-// 自動擷取每次瀏覽的網頁內容（僅在 autoCaptureEnabled 時啟用）
-chrome.webNavigation.onCompleted.addListener(async (details) => {
+// 移除或註解掉原本的 onCompleted 監聽器，改用 URL 變化監聽
+
+// 儲存每個 tab 的當前 URL，用於比較變化
+const tabUrls = new Map();
+
+// 監聽 tab 更新事件（包含 URL 變化）
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
     if (!result.autoCaptureEnabled) return;
-    // 僅處理主框架、排除特殊頁面
-    if (details.frameId !== 0) {
-      console.debug('[AutoCapture] Skip subframe:', details);
-      return;
-    }
-    chrome.tabs.get(details.tabId, (tab) => {
-      if (!tab || !tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
-        console.debug('[AutoCapture] Skip special/internal page:', tab && tab.url);
+
+    // 只處理 URL 變化且載入完成的情況
+    if (changeInfo.status === 'complete' && tab.url) {
+      const previousUrl = tabUrls.get(tabId);
+      const currentUrl = tab.url;
+
+      // 跳過特殊頁面
+      if (currentUrl.startsWith('chrome://') || currentUrl.startsWith('chrome-extension://')) {
         return;
       }
-      console.debug('[AutoCapture] Injecting contentScript into:', tab.url);
-      // 注入 contentScript 並取得內容
-      chrome.scripting.executeScript({
-        target: { tabId: details.tabId },
-        files: ['contentScript.js']
-      }, () => {
-        chrome.scripting.executeScript({
-          target: { tabId: details.tabId },
-          func: () => window.parsePageContent && window.parsePageContent(),
-        }, (results) => {
-          console.debug('[AutoCapture] contentScript result:', results);
-          if (results && results[0] && results[0].result && results[0].result.content) {
-            savePage(results[0].result);
-            console.debug('[AutoCapture] Saved pageData directly:', results[0].result.url);
-          } else {
-            console.debug('[AutoCapture] No valid content extracted:', results);
-          }
-        });
-      });
+
+      // 檢查 URL 是否真的改變了
+      if (previousUrl !== currentUrl) {
+        console.debug('[AutoCapture] URL changed:', previousUrl, '->', currentUrl);
+        tabUrls.set(tabId, currentUrl);
+
+        // 處理新頁面
+        handlePageCapture(tabId, tab);
+      }
+    }
+  });
+});
+
+// 監聽歷史狀態變化（SPA 路由變化）
+chrome.webNavigation.onHistoryStateUpdated.addListener(async (details) => {
+  chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
+    if (!result.autoCaptureEnabled) return;
+
+    // 只處理主框架
+    if (details.frameId !== 0) return;
+
+    chrome.tabs.get(details.tabId, (tab) => {
+      if (!tab || !tab.url) return;
+
+      const previousUrl = tabUrls.get(details.tabId);
+      const currentUrl = tab.url;
+
+      if (previousUrl !== currentUrl) {
+        console.debug('[AutoCapture] SPA navigation detected:', previousUrl, '->', currentUrl);
+        tabUrls.set(details.tabId, currentUrl);
+
+        // SPA 導航需要稍長的等待時間
+        setTimeout(() => {
+          handlePageCapture(details.tabId, tab, true);
+        }, 1500);
+      }
     });
   });
 }, { url: [{ schemes: ['http', 'https'] }] });
+
+// 統一的頁面捕獲處理函數
+async function handlePageCapture(tabId, tab, isSPA = false) {
+  if (!tab || !tab.url) return;
+
+  console.debug('[AutoCapture] Capturing page:', tab.url, isSPA ? '(SPA)' : '(Regular)');
+
+  // 統一等待時間，SPA 稍長一些
+  const delay = isSPA ? 2000 : 1000;
+
+  setTimeout(async () => {
+    try {
+      // 首先注入 contentScript
+      await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ['contentScript.js']
+      });
+
+      // 執行內容解析，統一使用重試機制
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: () => {
+          return new Promise((resolve) => {
+            const maxRetries = 5; // 統一重試次數
+            let retryCount = 0;
+
+            const attemptCapture = () => {
+              // 檢查頁面是否準備好
+              const hasContent = document.body && document.body.innerText.trim().length > 50;
+              const readyState = document.readyState === 'complete';
+
+              // 檢查是否有主要內容區域（適用於所有網站）
+              const hasMainContent = document.querySelector('main') ||
+                document.querySelector('[role="main"]') ||
+                document.querySelector('#main') ||
+                document.querySelector('.main-content') ||
+                document.querySelector('article') ||
+                document.querySelector('.content') ||
+                document.querySelector('[data-testid]') ||
+                document.body; // 最後備選
+
+              const isContentReady = hasContent && readyState && hasMainContent;
+
+              if (isContentReady && window.parsePageContent) {
+                console.debug('[AutoCapture] Content ready, parsing...');
+                const result = window.parsePageContent();
+                resolve(result);
+              } else if (retryCount < maxRetries) {
+                retryCount++;
+                console.debug(`[AutoCapture] Retry ${retryCount}/${maxRetries} - waiting for content...`);
+                setTimeout(attemptCapture, 800);
+              } else {
+                // 最後嘗試基本捕獲
+                console.debug('[AutoCapture] Max retries reached, attempting final capture...');
+                resolve(window.parsePageContent ? window.parsePageContent() : null);
+              }
+            };
+
+            attemptCapture();
+          });
+        }
+      });
+
+      if (results && results[0] && results[0].result && results[0].result.content) {
+        const saveResult = await savePage(results[0].result);
+        console.debug('[AutoCapture] Saved successfully:', tab.url);
+      } else {
+        console.debug('[AutoCapture] No content captured, trying fallback for:', tab.url);
+        // 統一使用備用捕獲方法
+        await attemptFallbackCapture(tabId, tab);
+      }
+    } catch (error) {
+      console.warn('[AutoCapture] Failed to capture:', tab.url, error.message);
+
+      // 處理權限錯誤
+      if (error.message.includes('Cannot access')) {
+        console.debug('[AutoCapture] Permission denied, likely CSP restriction');
+      } else {
+        // 其他錯誤也嘗試備用方法
+        await attemptFallbackCapture(tabId, tab);
+      }
+    }
+  }, delay);
+}
+
+// 統一的備用捕獲方法
+async function attemptFallbackCapture(tabId, tab) {
+  try {
+    console.debug('[AutoCapture] Attempting fallback capture for:', tab.url);
+
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      func: () => {
+        // 簡化但強健的內容擷取
+        const title = document.title ||
+          document.querySelector('h1')?.textContent ||
+          document.querySelector('h2')?.textContent ||
+          '(無標題)';
+
+        const content = document.body?.innerText || '';
+        const url = window.location.href;
+
+        if (content.length > 20) {
+          const words = content.split(/\s+/).filter(w => w.length > 0);
+          return {
+            title: title.trim(),
+            content: content.trim(),
+            excerpt: content.substring(0, 200).trim(),
+            url: url,
+            siteName: new URL(url).hostname,
+            wordCount: words.length,
+            readingTime: Math.ceil(words.length / 200)
+          };
+        }
+        return null;
+      }
+    });
+
+    if (results && results[0] && results[0].result) {
+      await savePage(results[0].result);
+      console.debug('[AutoCapture] Fallback capture successful:', tab.url);
+    }
+  } catch (error) {
+    console.warn('[AutoCapture] Fallback capture also failed:', error);
+  }
+}
+
+// 清理已關閉的 tab
+chrome.tabs.onRemoved.addListener((tabId) => {
+  tabUrls.delete(tabId);
+});
+
+// 擴充功能啟動時初始化現有 tabs 的 URL
+chrome.runtime.onStartup.addListener(async () => {
+  try {
+    const tabs = await chrome.tabs.query({});
+    tabs.forEach(tab => {
+      if (tab.url && !tab.url.startsWith('chrome://')) {
+        tabUrls.set(tab.id, tab.url);
+      }
+    });
+    console.debug('[AutoCapture] Initialized URLs for', tabs.length, 'tabs');
+  } catch (error) {
+    console.warn('[AutoCapture] Failed to initialize tab URLs:', error);
+  }
+});
