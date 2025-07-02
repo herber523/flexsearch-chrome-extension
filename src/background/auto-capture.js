@@ -9,10 +9,39 @@ const tabUrls = new Map();
 /**
  * 檢查 URL 是否應該跳過
  * @param {string} url 要檢查的 URL
+ * @param {Set<string>} domainBlacklist 網域黑名單
  * @returns {boolean} 是否應該跳過
  */
-function shouldSkipUrl(url) {
-  return SKIP_URLS.some(skipUrl => url.startsWith(skipUrl));
+function shouldSkipUrl(url, domainBlacklist = new Set()) {
+  // 檢查預設跳過的 URL
+  if (SKIP_URLS.some(skipUrl => url.startsWith(skipUrl))) {
+    return true;
+  }
+
+  // 檢查網域黑名單
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase();
+
+    // 檢查完整網域匹配
+    if (domainBlacklist.has(hostname)) {
+      return true;
+    }
+
+    // 檢查萬用字元匹配 (*.example.com)
+    for (const blacklistedDomain of domainBlacklist) {
+      if (blacklistedDomain.startsWith('*.')) {
+        const pattern = blacklistedDomain.substring(2);
+        if (hostname.endsWith('.' + pattern) || hostname === pattern) {
+          return true;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('[AutoCapture] Invalid URL for blacklist check:', url, error);
+  }
+
+  return false;
 }
 
 /**
@@ -22,7 +51,11 @@ function shouldSkipUrl(url) {
  * @param {boolean} isSPA 是否為 SPA 導航
  */
 export async function handlePageCapture(tabId, tab, isSPA = false) {
-  if (!tab || !tab.url || shouldSkipUrl(tab.url)) return;
+  // 取得網域黑名單
+  const storage = await chrome.storage.local.get(['domainBlacklist']);
+  const domainBlacklist = new Set(storage.domainBlacklist || []);
+  
+  if (!tab || !tab.url || shouldSkipUrl(tab.url, domainBlacklist)) return;
 
   console.debug('[AutoCapture] Capturing page:', tab.url, isSPA ? '(SPA)' : '(Regular)');
 
@@ -184,16 +217,17 @@ function simpleFallbackCapture() {
 export function initializeAutoCapture() {
   // 監聽 tab 更新事件（包含 URL 變化）
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
+    chrome.storage.local.get(['autoCaptureEnabled', 'domainBlacklist'], (result) => {
       if (!result.autoCaptureEnabled) return;
 
       // 只處理 URL 變化且載入完成的情況
       if (changeInfo.status === 'complete' && tab.url) {
         const previousUrl = tabUrls.get(tabId);
         const currentUrl = tab.url;
+        const domainBlacklist = new Set(result.domainBlacklist || []);
 
-        // 跳過特殊頁面
-        if (shouldSkipUrl(currentUrl)) {
+        // 跳過特殊頁面和黑名單網域
+        if (shouldSkipUrl(currentUrl, domainBlacklist)) {
           return;
         }
 
@@ -246,7 +280,7 @@ export function initializeAutoCapture() {
     try {
       const tabs = await chrome.tabs.query({});
       tabs.forEach(tab => {
-        if (tab.url && !shouldSkipUrl(tab.url)) {
+        if (tab.url && !shouldSkipUrl(tab.url, new Set())) {
           tabUrls.set(tab.id, tab.url);
         }
       });
