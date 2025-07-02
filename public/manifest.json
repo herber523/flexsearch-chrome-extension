@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FlexSearch Finder",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "使用 FlexSearch + IndexedDB 的全文搜尋工具",
   "permissions": [
     "storage",
@@ -15,7 +15,7 @@
   ],
   "action": {
     "default_title": "FlexSearch Finder",
-    "default_popup": "src/popup.html"
+    "default_popup": "popup/popup.html"
   },
   "background": {
     "service_worker": "background.js",
