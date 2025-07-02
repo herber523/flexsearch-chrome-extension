@@ -1,0 +1,8 @@
+fix: Resolve build and path issues after merge
+
+This commit addresses several issues encountered after merging remote changes:
+- Corrected import paths for `contentScript.js` and `tokenizer.js` in `vite.config.js` and `src/db.js` respectively, as these files were moved in the remote branch.
+- Updated `vite.config.js` to correctly copy HTML files from their new locations (`src/popup/popup.html`, `src/search/index.html`, `src/settings/settings.html`) to the `dist` root.
+- Adjusted `src/popup.js` to correctly reference `index.html` and to align with the new settings page button ID (`open-settings`).
+- Removed the `auto-capture-toggle` UI and logic from `popup.html` and `popup.js` as this functionality is now managed in the dedicated settings page.
+- Ensured `src/popup/popup.html` reflects the remote UI style after merge.

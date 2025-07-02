@@ -10,10 +10,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         background: resolve(__dirname, 'src/background.js'),
-        contentScript: resolve(__dirname, 'src/contentScript.js'),
+        contentScript: resolve(__dirname, 'src/content/contentScript.js'),
         popup: resolve(__dirname, 'src/popup.js'),
         main: resolve(__dirname, 'src/main.js'),
-        settings: resolve(__dirname, 'src/settings.js'),
+        settings: resolve(__dirname, 'src/settings/settings.js'),
       },
       output: {
         entryFileNames: '[name].js',
@@ -25,9 +25,9 @@ export default defineConfig({
     {
       name: 'copy-files',
       writeBundle() {
-        fs.copyFileSync(resolve(__dirname, 'src/popup.html'), resolve(__dirname, 'dist/popup.html'));
-        fs.copyFileSync(resolve(__dirname, 'src/index.html'), resolve(__dirname, 'dist/index.html'));
-        fs.copyFileSync(resolve(__dirname, 'src/settings.html'), resolve(__dirname, 'dist/settings.html'));
+        fs.copyFileSync(resolve(__dirname, 'src/popup/popup.html'), resolve(__dirname, 'dist/popup.html'));
+        fs.copyFileSync(resolve(__dirname, 'src/search/index.html'), resolve(__dirname, 'dist/index.html'));
+        fs.copyFileSync(resolve(__dirname, 'src/settings/settings.html'), resolve(__dirname, 'dist/settings.html'));
         fs.copyFileSync(resolve(__dirname, 'public/manifest.json'), resolve(__dirname, 'dist/manifest.json'));
       },
     },
