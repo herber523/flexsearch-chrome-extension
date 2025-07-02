@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Create extension zip
+        run: |
+          cd dist
+          zip -r ../flexsearch-chrome-extension-${{ github.ref_name }}.zip .
+          cd ..
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # 獲取上一個 tag
+          PREV_TAG=$(git tag --sort=-version:refname | sed -n '2p')
+          
+          if [ -z "$PREV_TAG" ]; then
+            # 如果沒有上一個 tag，則從第一個 commit 開始
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            # 獲取兩個 tag 之間的 commit
+            CHANGELOG=$(git log $PREV_TAG..${{ github.ref_name }} --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          
+          # 處理多行輸出
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## 更新內容
+            
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
+            ## 安裝說明
+            
+            1. 下載 `flexsearch-chrome-extension-${{ github.ref_name }}.zip`
+            2. 解壓縮檔案
+            3. 開啟 Chrome 瀏覽器，進入 `chrome://extensions/`
+            4. 開啟「開發人員模式」
+            5. 點擊「載入未封裝項目」
+            6. 選擇解壓縮後的資料夾
+            
+            ## 檔案說明
+            
+            - `flexsearch-chrome-extension-${{ github.ref_name }}.zip`: Chrome 擴充功能檔案
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./flexsearch-chrome-extension-${{ github.ref_name }}.zip
+          asset_name: flexsearch-chrome-extension-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
