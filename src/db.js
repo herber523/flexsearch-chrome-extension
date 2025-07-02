@@ -1,6 +1,6 @@
 import { openDB } from 'idb';
 import FlexSearch from 'flexsearch';
-import { tokenizer } from './tokenizer.js';
+import { tokenizer } from './shared/tokenizer.js';
 
 const DB_NAME = 'browsing-history-db';
 const DB_VERSION = 3;

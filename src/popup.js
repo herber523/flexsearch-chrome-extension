@@ -65,17 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 自動擷取模式開關
-  const autoCaptureToggle = document.getElementById('auto-capture-toggle');
-  chrome.storage.local.get(['autoCaptureEnabled'], (result) => {
-    autoCaptureToggle.checked = !!result.autoCaptureEnabled;
-  });
-  autoCaptureToggle.addEventListener('change', (e) => {
-    chrome.storage.local.set({ autoCaptureEnabled: e.target.checked });
-  });
+  
 
   // 開啟設定頁面
-  document.getElementById('open-settings-page').addEventListener('click', () => {
+  document.getElementById('open-settings').addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
   });
 });
