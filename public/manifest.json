@@ -15,14 +15,15 @@
   ],
   "action": {
     "default_title": "FlexSearch Finder",
-    "default_popup": "src/popup.html"
+    "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
+  "options_page": "settings.html",
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "web_accessible_resources": [
     {

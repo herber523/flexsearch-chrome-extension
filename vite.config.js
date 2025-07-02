@@ -1,41 +1,35 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
+import fs from 'fs';
 
 export default defineConfig({
   build: {
+    outDir: 'dist',
     minify: false,
     sourcemap: true,
-    outDir: "dist",
     rollupOptions: {
       input: {
         background: resolve(__dirname, 'src/background.js'),
+        contentScript: resolve(__dirname, 'src/contentScript.js'),
         popup: resolve(__dirname, 'src/popup.js'),
         main: resolve(__dirname, 'src/main.js'),
-        contentScript: resolve(__dirname, 'src/contentScript.js')
+        settings: resolve(__dirname, 'src/settings.js'),
       },
       output: {
         entryFileNames: '[name].js',
-        chunkFileNames: '[name]-[hash].js',
-        assetFileNames: '[name].[ext]'
-      }
-    }
+        chunkFileNames: 'chunks/[name].js',
+      },
+    },
   },
   plugins: [
     {
-      name: 'copy-html',
+      name: 'copy-files',
       writeBundle() {
-        const fs = require('fs');
-        const path = require('path');
-
-        if (!fs.existsSync('dist/src')) {
-          fs.mkdirSync('dist/src', { recursive: true });
-        }
-
-        fs.copyFileSync('src/popup.html', 'dist/src/popup.html');
-        fs.copyFileSync('src/index.html', 'dist/src/index.html');
-
-        fs.copyFileSync('public/manifest.json', 'dist/manifest.json');
-      }
-    }
-  ]
+        fs.copyFileSync(resolve(__dirname, 'src/popup.html'), resolve(__dirname, 'dist/popup.html'));
+        fs.copyFileSync(resolve(__dirname, 'src/index.html'), resolve(__dirname, 'dist/index.html'));
+        fs.copyFileSync(resolve(__dirname, 'src/settings.html'), resolve(__dirname, 'dist/settings.html'));
+        fs.copyFileSync(resolve(__dirname, 'public/manifest.json'), resolve(__dirname, 'dist/manifest.json'));
+      },
+    },
+  ],
 });
