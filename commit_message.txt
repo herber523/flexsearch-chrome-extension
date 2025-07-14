@@ -1,36 +1,47 @@
-feat: Implement whitelist/blacklist domain filtering system
+feat: Complete i18n integration and project cleanup
 
-Complete domain filtering system with mutually exclusive blacklist and whitelist modes for precise content capture control.
+## 🌐 Complete Internationalization Implementation
 
-**Key Features:**
-• Added filter mode selection: blacklist mode (exclude specified domains) and whitelist mode (allow only specified domains)
-• Support for wildcard domain matching (*.example.com)
-• Smart domain matching algorithm supporting full domains and subdomains
-• Confirmation prompts when switching modes to prevent accidental operations
-• Complete data migration logic ensuring smooth upgrades from older versions
+### Features Added:
+- Full multilingual support (English, Traditional Chinese, Japanese)
+- Dynamic language switching in settings without page reload
+- Language preference persistence in Chrome storage
+- Unified language experience across all pages (popup, search, settings)
+- Chrome extension standard i18n format with placeholder support
 
-**Technical Implementation:**
-• Refactored background.js auto-capture logic with integrated filtering mechanism
-• Updated settings.js to support dual-mode domain management and dynamic UI updates
-• Added settings.html filter mode selection interface with responsive design
-• Migrated to chrome.storage.local for improved reliability
-• Enhanced error handling and user feedback mechanisms
+### Technical Implementation:
+- Created comprehensive i18n manager (`src/shared/i18n.js`)
+- Added complete translation files for all supported languages
+- Integrated i18n into all UI components and error messages
+- Updated manifest.json to use Chrome extension i18n format
+- Built-in fallback mechanism for missing translations
 
-**User Experience:**
-• Modern UI design supporting mode switching and domain management
-• Real-time visual feedback and status updates
-• Clear operation prompts and error handling
-• Keyboard shortcut support (Enter to add domains)
+### Project Structure Improvements:
+- Cleaned up legacy and duplicate files from root and src directories
+- Reorganized files into proper directory structure
+- Updated vite.config.js to use correct entry points
+- Removed test files and development artifacts
+- Updated .gitignore to exclude temporary files
 
-**Modified Files:**
-• src/background.js - Added shouldFilterUrl function and complete filtering logic
-• src/settings/settings.js - Refactored for dual-mode support with mode switching
-• src/settings/settings.html - Added filter mode selection UI and related styles
-• .vscode/tasks.json - Added build task configuration
+### Files Changed:
+- ✅ Added: `src/_locales/` directory with translations for en, zh_TW, ja
+- ✅ Added: `src/shared/i18n.js` - Complete i18n management system
+- ✅ Updated: All HTML files with `data-i18n` attributes
+- ✅ Updated: All JavaScript files to use i18n system
+- ✅ Updated: `public/manifest.json` to use Chrome i18n format
+- ✅ Updated: `vite.config.js` for correct build paths
+- ✅ Removed: Legacy duplicate files and test artifacts
 
-**Testing Status:**
-• Build tests passed ✓
-• Functional logic verified ✓
-• UI responsiveness tested ✓
+### Build & Deployment:
+- ✅ Build system updated to copy `_locales` directory
+- ✅ All entry points corrected in vite configuration
+- ✅ Production build verified and tested
+- ✅ Extension ready for Chrome Web Store submission
 
-This update significantly enhances the extension's usability, allowing users to precisely control which websites are automatically captured, whether excluding specific sites (blacklist) or allowing only specific sites (whitelist).
+### User Experience:
+- Language selection applies immediately without page reload
+- Consistent language across all extension pages
+- Professional translations for all UI elements
+- Proper error messages in user's preferred language
+
+This completes the comprehensive i18n integration for the FlexSearch Chrome extension, providing a professional multilingual experience ready for international users.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlexSearch Finder - 設定</title>
+  <title data-i18n="settingsPageTitle">Settings</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
@@ -318,13 +318,43 @@
       border-radius: 8px;
       border: 1px solid #e9ecef;
     }
+
+    .language-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .language-selector label {
+      font-weight: 500;
+      color: #333;
+      min-width: 80px;
+    }
+
+    .language-dropdown {
+      flex: 1;
+      max-width: 200px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .language-dropdown:focus {
+      outline: none;
+      border-color: #0077ff;
+      box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>設定</h1>
-      <p class="subtitle">管理 FlexSearch Finder 的偏好設定</p>
+      <h1 data-i18n="settingsPageTitle">Settings</h1>
+      <p class="subtitle" data-i18n="settingsPageSubtitle">Manage FlexSearch Finder preferences</p>
     </header>
 
     <div id="success-message" class="success-message"></div>
@@ -332,36 +362,36 @@
 
     <!-- Auto Capture Settings -->
     <div class="section">
-      <h2 class="section-title">🚀 自動擷取設定</h2>
-      <p class="section-description">控制自動擷取網頁內容的行為</p>
+      <h2 class="section-title" data-i18n="autoCapture">🚀 Auto Capture</h2>
+      <p class="section-description" data-i18n="autoCaptureDescription">Control automatic web page content capture behavior</p>
       
       <div class="toggle-container">
         <label class="toggle">
           <input type="checkbox" id="auto-capture-toggle">
           <span class="slider"></span>
         </label>
-        <label for="auto-capture-toggle" style="cursor: pointer;">啟用自動擷取模式</label>
+        <label for="auto-capture-toggle" style="cursor: pointer;" data-i18n="enableAutoCapture">Enable auto capture mode</label>
       </div>
     </div>
 
     <!-- Domain Filtering -->
     <div class="section domain-section">
-      <h2 class="section-title">🚫 網域黑名單</h2>
-      <p class="section-description">
-        排除以下網域，其他網域都會被擷取
+      <h2 class="section-title" data-i18n="domainFiltering">🚫 Domain Filtering</h2>
+      <p class="section-description domain-description" data-i18n="blacklistDescription">
+        Exclude the following domains, all other domains will be captured
       </p>
 
       <!-- Filter Mode Selection -->
       <div class="filter-mode-container" style="margin-bottom: 20px;">
-        <h3 style="margin-bottom: 10px; font-size: 16px; color: #333;">過濾模式</h3>
+        <h3 style="margin-bottom: 10px; font-size: 16px; color: #333;" data-i18n="filterMode">Filter Mode</h3>
         <div class="radio-group">
           <label class="radio-option">
             <input type="radio" name="filterMode" value="blacklist" checked>
-            <span class="radio-label">黑名單模式 - 排除指定網域</span>
+            <span class="radio-label" data-i18n="blacklistMode">Blacklist Mode - Exclude specified domains</span>
           </label>
           <label class="radio-option">
             <input type="radio" name="filterMode" value="whitelist">
-            <span class="radio-label">白名單模式 - 只允許指定網域</span>
+            <span class="radio-label" data-i18n="whitelistMode">Whitelist Mode - Allow only specified domains</span>
           </label>
         </div>
       </div>
@@ -370,52 +400,69 @@
         <input 
           type="text" 
           id="domain-input" 
-          placeholder="輸入網域名稱，例如: example.com 或 *.google.com"
+          data-i18n-placeholder="domainInputPlaceholder"
+          placeholder="Enter domain name, e.g.: example.com or *.google.com"
         >
-        <button id="add-domain-btn">新增網域</button>
+        <button id="add-domain-btn" data-i18n="addDomain">Add Domain</button>
       </div>
 
       <div class="domain-list" id="domain-list">
         <div class="empty-state" id="empty-state">
-          尚未新增任何網域到黑名單
+          No domains added yet
         </div>
+      </div>
+    </div>
+
+    <!-- Language Settings -->
+    <div class="section">
+      <h2 class="section-title" data-i18n="languageSettings">🌐 語言設定</h2>
+      <p class="section-description" data-i18n="languageDescription">選擇您偏好的語言</p>
+      
+      <div class="language-selector">
+        <label for="language-select" data-i18n="selectLanguage">選擇語言:</label>
+        <select id="language-select" class="language-dropdown">
+          <option value="en">English</option>
+          <option value="zh_TW">繁體中文</option>
+          <option value="ja">日本語</option>
+        </select>
       </div>
     </div>
 
     <!-- Database Management -->
     <div class="section">
-      <h2 class="section-title">💾 資料庫管理</h2>
-      <p class="section-description">查看儲存統計資訊並管理本地資料</p>
+      <h2 class="section-title" data-i18n="databaseManagement">💾 Database Management</h2>
+      <p class="section-description" data-i18n="databaseDescription">View storage statistics and manage local data</p>
 
       <div class="stats-grid" id="stats-grid">
         <div class="stat-card">
           <div class="stat-number" id="total-pages">-</div>
-          <div class="stat-label">總頁面數</div>
+          <div class="stat-label" data-i18n="totalPages">Total Pages</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="total-size">-</div>
-          <div class="stat-label">約略大小</div>
+          <div class="stat-label" data-i18n="approximateSize">Approximate Size</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" id="last-updated">-</div>
-          <div class="stat-label">最後更新</div>
+          <div class="stat-label" data-i18n="lastUpdated">Last Updated</div>
         </div>
       </div>
 
       <div style="display: flex; gap: 10px;">
-        <button id="refresh-stats-btn" class="secondary-btn">重新整理統計</button>
-        <button id="export-data-btn" class="secondary-btn">匯出資料</button>
-        <button id="clear-db-btn" class="danger-btn">清空資料庫</button>
+        <button id="refresh-stats-btn" class="secondary-btn" data-i18n="refreshStats">Refresh Statistics</button>
+        <button id="export-data-btn" class="secondary-btn" data-i18n="exportData">Export Data</button>
+        <button id="clear-db-btn" class="danger-btn" data-i18n="clearDatabase">Clear Database</button>
       </div>
     </div>
 
     <!-- Back to Search -->
     <div class="section">
-      <h2 class="section-title">🔍 返回搜尋</h2>
-      <button id="back-to-search-btn" class="secondary-btn">返回搜尋頁面</button>
+      <h2 class="section-title">🔍 <span data-i18n="backToSearch">Back to Search</span></h2>
+      <button id="back-to-search-btn" class="secondary-btn" data-i18n="backToSearchPage">Back to Search Page</button>
     </div>
   </div>
 
+  <script type="module" src="../shared/i18n.js"></script>
   <script type="module" src="settings.js"></script>
 </body>
 </html>

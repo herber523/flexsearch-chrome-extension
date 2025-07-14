@@ -1,0 +1,494 @@
+{
+  "extensionName": {
+    "message": "FlexSearch Finder",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "智慧全文搜尋瀏覽歷史，支援中日韓及西方語言",
+    "description": "Extension description"
+  },
+  
+  "search": {
+    "message": "搜尋",
+    "description": "Search button or label"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Settings page title"
+  },
+  "cancel": {
+    "message": "取消",
+    "description": "Cancel button"
+  },
+  "save": {
+    "message": "儲存",
+    "description": "Save button"
+  },
+  "delete": {
+    "message": "刪除",
+    "description": "Delete button"
+  },
+  "add": {
+    "message": "新增",
+    "description": "Add button"
+  },
+  "remove": {
+    "message": "移除",
+    "description": "Remove button"
+  },
+  "confirm": {
+    "message": "確認",
+    "description": "Confirm button"
+  },
+  "loading": {
+    "message": "載入中...",
+    "description": "Loading indicator"
+  },
+  "error": {
+    "message": "錯誤",
+    "description": "Error message"
+  },
+  "success": {
+    "message": "成功",
+    "description": "Success message"
+  },
+
+  "quickSearch": {
+    "message": "快速搜尋",
+    "description": "Quick search label in popup"
+  },
+  "searchPlaceholder": {
+    "message": "輸入搜尋關鍵字...",
+    "description": "Search input placeholder"
+  },
+  "captureCurrentPage": {
+    "message": "捕獲目前頁面",
+    "description": "Capture current page button"
+  },
+  "openSearchPage": {
+    "message": "開啟搜尋頁面",
+    "description": "Open search page button"
+  },
+  "openSettings": {
+    "message": "開啟設定",
+    "description": "Open settings button"
+  },
+  "captureSuccess": {
+    "message": "成功儲存此頁面！",
+    "description": "Success message when page is captured"
+  },
+  "captureError": {
+    "message": "儲存頁面失敗：$ERROR$",
+    "description": "Error message when page capture fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "網路錯誤"
+      }
+    }
+  },
+  "cannotCapturePage": {
+    "message": "無法捕獲此頁面",
+    "description": "Error when page cannot be captured"
+  },
+  "processing": {
+    "message": "處理中...",
+    "description": "Processing indicator"
+  },
+
+  "searchPageTitle": {
+    "message": "搜尋歷史",
+    "description": "Search page title"
+  },
+  "searchResultsTitle": {
+    "message": "搜尋結果",
+    "description": "Search results section title"
+  },
+  "noResults": {
+    "message": "沒有找到結果",
+    "description": "No search results message"
+  },
+  "searchResultsCount": {
+    "message": "找到 $COUNT$ 個結果",
+    "description": "Search results count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "readingTime": {
+    "message": "$TIME$ 分鐘閱讀",
+    "description": "Reading time estimate",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "wordCount": {
+    "message": "$COUNT$ 個字",
+    "description": "Word count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1000"
+      }
+    }
+  },
+  "lastVisited": {
+    "message": "上次造訪：$DATE$",
+    "description": "Last visited date",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2025-07-15"
+      }
+    }
+  },
+  "clearAllData": {
+    "message": "清除所有資料",
+    "description": "Clear all data button"
+  },
+  "clearDataConfirm": {
+    "message": "確定要清除所有資料嗎？此動作無法復原。",
+    "description": "Confirmation message for clearing all data"
+  },
+  "dataCleared": {
+    "message": "所有資料已清除",
+    "description": "Success message after clearing data"
+  },
+
+  "settingsPageTitle": {
+    "message": "設定",
+    "description": "Settings page title"
+  },
+  "settingsPageSubtitle": {
+    "message": "管理 FlexSearch Finder 的偏好設定",
+    "description": "Settings page subtitle"
+  },
+  "autoCapture": {
+    "message": "自動擷取",
+    "description": "Auto capture section title"
+  },
+  "autoCaptureDescription": {
+    "message": "控制自動擷取網頁內容的行為",
+    "description": "Auto capture description"
+  },
+  "enableAutoCapture": {
+    "message": "啟用自動擷取模式",
+    "description": "Enable auto capture toggle label"
+  },
+  "autoCaptureEnabled": {
+    "message": "自動擷取已啟用",
+    "description": "Auto capture enabled message"
+  },
+  "autoCaptureDisabled": {
+    "message": "自動擷取已停用",
+    "description": "Auto capture disabled message"
+  },
+  
+  "domainFiltering": {
+    "message": "域名過濾",
+    "description": "Domain filtering section title"
+  },
+  "domainBlacklist": {
+    "message": "域名黑名單",
+    "description": "Domain blacklist title"
+  },
+  "domainWhitelist": {
+    "message": "域名白名單",
+    "description": "Domain whitelist title"
+  },
+  "blacklistDescription": {
+    "message": "排除以下域名，其他域名都會被擷取",
+    "description": "Blacklist mode description"
+  },
+  "whitelistDescription": {
+    "message": "只擷取以下域名的內容，其他域名將被忽略",
+    "description": "Whitelist mode description"
+  },
+  "filterMode": {
+    "message": "過濾模式",
+    "description": "Filter mode label"
+  },
+  "blacklistMode": {
+    "message": "黑名單模式 - 排除指定域名",
+    "description": "Blacklist mode option"
+  },
+  "whitelistMode": {
+    "message": "白名單模式 - 只允許指定域名",
+    "description": "Whitelist mode option"
+  },
+  "switchToBlacklist": {
+    "message": "切換到黑名單模式？",
+    "description": "Confirm switching to blacklist mode"
+  },
+  "switchToWhitelist": {
+    "message": "切換到白名單模式？",
+    "description": "Confirm switching to whitelist mode"
+  },
+  "switchedToBlacklist": {
+    "message": "已切換到黑名單模式",
+    "description": "Success message for switching to blacklist"
+  },
+  "switchedToWhitelist": {
+    "message": "已切換到白名單模式",
+    "description": "Success message for switching to whitelist"
+  },
+  "addDomain": {
+    "message": "新增域名",
+    "description": "Add domain button"
+  },
+  "domainInputPlaceholder": {
+    "message": "輸入域名，例如：example.com 或 *.google.com",
+    "description": "Domain input placeholder"
+  },
+  "domainAlreadyExists": {
+    "message": "此域名已在$MODE$中",
+    "description": "Domain already exists error",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "黑名單"
+      }
+    }
+  },
+  "invalidDomain": {
+    "message": "請輸入有效的域名格式，例如：example.com 或 *.google.com",
+    "description": "Invalid domain error"
+  },
+  "domainAdded": {
+    "message": "已新增「$DOMAIN$」到$MODE$",
+    "description": "Domain added success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "黑名單"
+      }
+    }
+  },
+  "domainRemoved": {
+    "message": "已從$MODE$移除「$DOMAIN$」",
+    "description": "Domain removed success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "黑名單"
+      }
+    }
+  },
+  "noDomains": {
+    "message": "尚未新增任何域名到$MODE$",
+    "description": "Empty domain list message",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "黑名單"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "請輸入有效的域名",
+    "description": "Enter valid domain error"
+  },
+  "blacklist": {
+    "message": "黑名單",
+    "description": "Blacklist term"
+  },
+  "whitelist": {
+    "message": "白名單",
+    "description": "Whitelist term"
+  },
+
+  "databaseManagement": {
+    "message": "資料庫管理",
+    "description": "Database management section title"
+  },
+  "databaseDescription": {
+    "message": "查看儲存統計資訊並管理本地資料",
+    "description": "Database management description"
+  },
+  "totalPages": {
+    "message": "總頁面數",
+    "description": "Total pages count label"
+  },
+  "approximateSize": {
+    "message": "約略大小",
+    "description": "Approximate size label"
+  },
+  "lastUpdated": {
+    "message": "最後更新",
+    "description": "Last updated label"
+  },
+  "noData": {
+    "message": "無資料",
+    "description": "No data indicator"
+  },
+  "refreshStats": {
+    "message": "重新整理統計",
+    "description": "Refresh statistics button"
+  },
+  "exportData": {
+    "message": "匯出資料",
+    "description": "Export data button"
+  },
+  "clearDatabase": {
+    "message": "清空資料庫",
+    "description": "Clear database button"
+  },
+  "clearDatabaseConfirm": {
+    "message": "警告：此操作將永久刪除所有儲存的瀏覽記錄資料，無法復原。\\n\\n確定要繼續嗎？",
+    "description": "Clear database confirmation message"
+  },
+  "clearDatabaseDoubleConfirm": {
+    "message": "最後確認：您確定要清空整個資料庫嗎？\\n\\n此操作無法復原！",
+    "description": "Clear database double confirmation message"
+  },
+  "databaseCleared": {
+    "message": "資料庫已清空",
+    "description": "Database cleared success message"
+  },
+  "exportedData": {
+    "message": "已匯出 $COUNT$ 筆資料",
+    "description": "Data exported success message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "backToSearch": {
+    "message": "返回搜尋",
+    "description": "Back to search button"
+  },
+  "backToSearchPage": {
+    "message": "返回搜尋頁面",
+    "description": "Back to search page button"
+  },
+
+  "languageSettings": {
+    "message": "語言設定",
+    "description": "Language settings section title"
+  },
+  "languageDescription": {
+    "message": "選擇您偏好的語言",
+    "description": "Language settings description"
+  },
+  "currentLanguage": {
+    "message": "目前語言",
+    "description": "Current language label"
+  },
+  "selectLanguage": {
+    "message": "選擇語言",
+    "description": "Select language label"
+  },
+  "languageChanged": {
+    "message": "語言已更改為$LANGUAGE$",
+    "description": "Language changed success message",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "繁體中文"
+      }
+    }
+  },
+  "restartRequired": {
+    "message": "請重新啟動擴展以套用語言變更",
+    "description": "Restart required message"
+  },
+
+  "loadSettingsError": {
+    "message": "載入設定時發生錯誤：$ERROR$",
+    "description": "Load settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "網路錯誤"
+      }
+    }
+  },
+  "saveSettingsError": {
+    "message": "儲存設定時發生錯誤：$ERROR$",
+    "description": "Save settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "儲存錯誤"
+      }
+    }
+  },
+  "saveDomainError": {
+    "message": "儲存域名設定時發生錯誤：$ERROR$",
+    "description": "Save domain settings error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "儲存錯誤"
+      }
+    }
+  },
+  "getStatsError": {
+    "message": "取得統計資訊時發生錯誤：$ERROR$",
+    "description": "Get statistics error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "資料庫錯誤"
+      }
+    }
+  },
+  "exportDataError": {
+    "message": "匯出資料時發生錯誤：$ERROR$",
+    "description": "Export data error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "檔案系統錯誤"
+      }
+    }
+  },
+  "clearDatabaseError": {
+    "message": "清空資料庫時發生錯誤：$ERROR$",
+    "description": "Clear database error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "資料庫錯誤"
+      }
+    }
+  },
+  "visitCount": {
+    "message": "訪問 $COUNT$ 次",
+    "description": "Visit count display",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "viewStoredContent": {
+    "message": "查看儲存內容",
+    "description": "Link to view stored content"
+  },
+  "goToOriginalPage": {
+    "message": "前往原始網頁",
+    "description": "Link to go to original page"
+  },
+  "storedContentPreview": {
+    "message": "儲存內容預覽",
+    "description": "Stored content preview header"
+  }
+}

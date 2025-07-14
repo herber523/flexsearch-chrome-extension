@@ -1,6 +1,7 @@
 // search/main.js - 重構後的搜尋頁面主要邏輯
 import { initializeDB, getAllPages } from '../shared/database.js';
 import { createSearchIndex, loadPagesToIndex, search, highlightText } from '../shared/search-engine.js';
+import i18n from '../shared/i18n.js';
 
 let allPages = [];
 let isInitialized = false;
@@ -13,6 +14,14 @@ async function initializeSearchPage() {
   
   try {
     console.log('正在初始化搜尋頁面...');
+    
+    // Initialize i18n first and apply user language preference
+    await i18n.init();
+    
+    // Explicitly localize elements after i18n is initialized
+    i18n.localizeElements();
+    
+    console.log('Search page initialized with language:', i18n.getCurrentLocale());
     
     // 初始化資料庫
     await initializeDB();
@@ -30,7 +39,7 @@ async function initializeSearchPage() {
     isInitialized = true;
   } catch (error) {
     console.error('搜尋頁面初始化失敗:', error);
-    showErrorMessage('初始化失敗，請重新整理頁面');
+    showErrorMessage(i18n.getMessage('error'));
   }
 }
 
@@ -60,16 +69,14 @@ function showEmptyState(query) {
   if (query) {
     container.innerHTML = `
       <div class="empty-state">
-        <p>沒有找到符合 "${query}" 的結果</p>
-        <p>嘗試使用不同的關鍵字或檢查拼寫</p>
-        <p>目前共有 ${allPages.length} 筆記錄可供搜尋</p>
+        <p>${i18n.getMessage('noResults')}</p>
+        <p>${i18n.getMessage('searchResultsCount', allPages.length)}</p>
       </div>
     `;
   } else {
     container.innerHTML = `
       <div class="empty-state">
-        <p>尚未有任何瀏覽記錄</p>
-        <p>開始瀏覽網頁並啟用自動捕獲功能，或手動儲存頁面</p>
+        <p>${i18n.getMessage('noResults')}</p>
       </div>
     `;
   }
@@ -99,17 +106,17 @@ function renderResultItem(page, query) {
     </div>
     <p class="result-content">${highlightText(contentPreview, query)}</p>
     <div class="result-meta">
-      ${page.readingTime ? `<span class="meta-item">📖 ${page.readingTime} 分鐘閱讀</span>` : ''}
-      ${page.wordCount ? `<span class="meta-item">📝 ${page.wordCount} 字</span>` : ''}
-      <span class="meta-item">👁 訪問 ${page.visitCount || 1} 次</span>
-      <span class="meta-item">📅 ${new Date(page.timestamp).toLocaleString()}</span>
+      ${page.readingTime ? `<span class="meta-item">📖 ${i18n.getMessage('readingTime', page.readingTime)}</span>` : ''}
+      ${page.wordCount ? `<span class="meta-item">📝 ${i18n.getMessage('wordCount', page.wordCount)}</span>` : ''}
+      <span class="meta-item">👁 ${i18n.getMessage('visitCount', page.visitCount || 1)}</span>
+      <span class="meta-item">📅 ${i18n.getMessage('lastVisited', new Date(page.timestamp).toLocaleString())}</span>
     </div>
     <div class="result-links" style="margin-top:8px;">
-      <a href="#" data-local-view="${localViewId}" style="margin-right:12px;">🔍 查看儲存內容</a>
-      <a href="${page.url}" target="_blank" rel="noopener noreferrer">🌐 前往原始網頁</a>
+      <a href="#" data-local-view="${localViewId}" style="margin-right:12px;">🔍 ${i18n.getMessage('viewStoredContent')}</a>
+      <a href="${page.url}" target="_blank" rel="noopener noreferrer">🌐 ${i18n.getMessage('goToOriginalPage')}</a>
     </div>
     <div class="local-content-preview" id="${localViewId}" style="display:none; margin-top:10px; background:#f8f8f8; border-radius:6px; padding:12px; color:#333;">
-      <div style="font-weight:bold; margin-bottom:6px;">儲存內容預覽：</div>
+      <div style="font-weight:bold; margin-bottom:6px;">${i18n.getMessage('storedContentPreview')}：</div>
       <div style="white-space:pre-wrap; max-height:300px; overflow-y:auto;">
         ${highlightText(page.content, query)}
       </div>
@@ -172,7 +179,7 @@ function renderResults(query) {
     const statsDiv = document.createElement('div');
     statsDiv.className = 'search-stats';
     statsDiv.style.cssText = 'margin-bottom: 16px; color: #666; font-size: 14px;';
-    statsDiv.textContent = `找到 ${matchedPages.length} 筆符合 "${query}" 的結果`;
+    statsDiv.textContent = i18n.getMessage('searchResultsCount', matchedPages.length);
     container.insertBefore(statsDiv, container.firstChild);
   }
 }
@@ -217,7 +224,7 @@ async function main() {
     setupSearchInput();
   } catch (error) {
     console.error('搜尋頁面載入失敗:', error);
-    showErrorMessage('頁面載入失敗，請重新整理');
+    showErrorMessage(i18n.getMessage('error'));
   }
 }
 

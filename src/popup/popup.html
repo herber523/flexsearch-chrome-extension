@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>FlexSearch Finder</title>
+  <title data-i18n="extensionName">FlexSearch Finder</title>
   <style>
     body {
       width: 350px;
@@ -98,20 +98,21 @@
 
 <body>
   <header>
-    <h1>FlexSearch Finder</h1>
+    <h1 data-i18n="extensionName">FlexSearch Finder</h1>
   </header>
 
-  <input type="text" id="popup-search" class="search-input" placeholder="快速搜尋...">
+  <input type="text" id="popup-search" class="search-input" data-i18n-placeholder="quickSearch" placeholder="Quick Search...">
 
   <div class="button-container">
-    <button id="open-search-page" type="button">開啟搜尋頁面</button>
-    <button id="capture-page" type="button" class="secondary">捕獲此頁面</button>
+    <button id="open-search-page" type="button" data-i18n="openSearchPage">Open Search Page</button>
+    <button id="capture-page" type="button" class="secondary" data-i18n="captureCurrentPage">Capture Current Page</button>
   </div>
 
   <div style="margin-top: 10px; text-align: center;">
-    <button id="open-settings" type="button" class="secondary" style="width: 100%;">⚙️ 設定</button>
+    <button id="open-settings" type="button" class="secondary" style="width: 100%;" data-i18n="openSettings">⚙️ Settings</button>
   </div>
 
+  <script type="module" src="../shared/i18n.js"></script>
   <script type="module" src="popup.js"></script>
 </body>
 

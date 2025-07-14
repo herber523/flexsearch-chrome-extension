@@ -80,7 +80,7 @@ async function handleManualCapture(pageData) {
  * 當點擊擴充功能圖示時（如果未設定 popup）
  */
 chrome.action.onClicked.addListener((tab) => {
-  chrome.tabs.create({ url: chrome.runtime.getURL('search/index.html') });
+  chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
 });
 
 /**

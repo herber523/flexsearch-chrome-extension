@@ -129,3 +129,14 @@ dist
 !.yarn/versions
 
 .vscode
+
+# Development files
+**/test-*.html
+**/i18n-*.html
+test.js
+
+# Report files
+*-report.md
+*.report.md
+
+commit_message.txt

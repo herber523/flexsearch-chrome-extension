@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>FlexSearch Finder</title>
+  <title data-i18n="searchPageTitle">Search History</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
@@ -132,20 +132,21 @@
 <body>
   <div class="container">
     <header>
-      <h1>瀏覽記錄搜尋</h1>
+      <h1 data-i18n="searchPageTitle">Search History</h1>
     </header>
 
     <div class="search-box">
-      <input type="text" id="search" placeholder="輸入關鍵字搜尋您的瀏覽記錄..." />
+      <input type="text" id="search" data-i18n-placeholder="searchPlaceholder" placeholder="Enter search keywords..." />
     </div>
 
     <div id="results">
       <div class="empty-state">
-        <p>開始輸入以搜尋您的索引內容</p>
+        <p data-i18n="searchResultsTitle">Start typing to search your indexed content</p>
       </div>
     </div>
   </div>
 
+  <script type="module" src="../shared/i18n.js"></script>
   <script type="module" src="main.js"></script>
 </body>
 

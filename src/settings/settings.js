@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import i18n from '../shared/i18n.js';
 
 class SettingsManager {
   constructor() {
@@ -14,6 +15,8 @@ class SettingsManager {
     await this.loadSettings();
     this.bindEvents();
     await this.refreshStats();
+    // Initialize i18n after DOM is ready
+    i18n.init();
   }
 
   async initDB() {
@@ -36,7 +39,8 @@ class SettingsManager {
         'autoCaptureEnabled', 
         'filterMode', 
         'domainBlacklist', 
-        'domainWhitelist'
+        'domainWhitelist',
+        'userLanguage'
       ]);
       
       // Migration for old data structure
@@ -54,10 +58,17 @@ class SettingsManager {
       this.domainBlacklist = new Set(result.domainBlacklist || []);
       this.domainWhitelist = new Set(result.domainWhitelist || []);
       
+      // Load language setting and update dropdown
+      const languageSelect = document.getElementById('language-select');
+      const currentLanguage = result.userLanguage || i18n.getCurrentLocale();
+      if (languageSelect) {
+        languageSelect.value = currentLanguage;
+      }
+      
       this.updateUIForCurrentMode();
       this.renderCurrentDomainList();
     } catch (error) {
-      this.showError('載入設定時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('loadSettingsError', error.message));
     }
   }
 
@@ -102,23 +113,29 @@ class SettingsManager {
 
     // Navigation
     document.getElementById('back-to-search-btn').addEventListener('click', () => {
-      chrome.tabs.create({ url: chrome.runtime.getURL('search/index.html') });
+      chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+    });
+
+    // Language selector
+    const languageSelect = document.getElementById('language-select');
+    languageSelect.addEventListener('change', (e) => {
+      this.changeLanguage(e.target.value);
     });
   }
 
   async saveAutoCaptureSetting(enabled) {
     try {
       await chrome.storage.local.set({ autoCaptureEnabled: enabled });
-      this.showSuccess('自動擷取設定已' + (enabled ? '啟用' : '停用'));
+      this.showSuccess(enabled ? i18n.getMessage('autoCaptureEnabled') : i18n.getMessage('autoCaptureDisabled'));
     } catch (error) {
-      this.showError('儲存設定時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('saveSettingsError', error.message));
     }
   }
 
   async switchFilterMode(newMode) {
     if (newMode === this.filterMode) return;
 
-    const confirmMsg = `切換到${newMode === 'whitelist' ? '白名單' : '黑名單'}模式？`;
+    const confirmMsg = newMode === 'whitelist' ? i18n.getMessage('switchToWhitelist') : i18n.getMessage('switchToBlacklist');
     if (!confirm(confirmMsg)) {
       // Revert radio button
       document.querySelector(`input[name="filterMode"][value="${this.filterMode}"]`).checked = true;
@@ -129,7 +146,8 @@ class SettingsManager {
     await chrome.storage.local.set({ filterMode: newMode });
     this.updateUIForCurrentMode();
     this.renderCurrentDomainList();
-    this.showSuccess(`已切換到${newMode === 'whitelist' ? '白名單' : '黑名單'}模式`);
+    const successMsg = newMode === 'whitelist' ? i18n.getMessage('switchedToWhitelist') : i18n.getMessage('switchedToBlacklist');
+    this.showSuccess(successMsg);
   }
 
   updateUIForCurrentMode() {
@@ -141,10 +159,10 @@ class SettingsManager {
     const sectionTitle = document.querySelector('.domain-section .section-title');
     const description = document.querySelector('.domain-section .section-description');
     
-    sectionTitle.textContent = isWhitelist ? '🎯 網域白名單' : '🚫 網域黑名單';
+    sectionTitle.textContent = isWhitelist ? `🎯 ${i18n.getMessage('domainWhitelist')}` : `🚫 ${i18n.getMessage('domainBlacklist')}`;
     description.textContent = isWhitelist 
-      ? '只擷取以下網域的內容，其他網域將被忽略' 
-      : '排除以下網域，其他網域都會被擷取';
+      ? i18n.getMessage('whitelistDescription')
+      : i18n.getMessage('blacklistDescription');
   }
 
   getCurrentDomainSet() {
@@ -161,21 +179,21 @@ class SettingsManager {
     const domain = input.value.trim().toLowerCase();
 
     if (!domain) {
-      this.showError('請輸入有效的網域名稱');
+      this.showError(i18n.getMessage('enterValidDomain'));
       return;
     }
 
     // Basic domain validation
     if (!this.isValidDomain(domain)) {
-      this.showError('請輸入有效的網域格式，例如: example.com 或 *.google.com');
+      this.showError(i18n.getMessage('invalidDomain'));
       return;
     }
 
     const currentSet = this.getCurrentDomainSet();
-    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
+    const modeText = this.filterMode === 'whitelist' ? i18n.getMessage('whitelist') : i18n.getMessage('blacklist');
 
     if (currentSet.has(domain)) {
-      this.showError(`此網域已在${modeText}中`);
+      this.showError(i18n.getMessage('domainAlreadyExists', modeText));
       return;
     }
 
@@ -183,17 +201,17 @@ class SettingsManager {
     await this.saveDomainSettings();
     this.renderCurrentDomainList();
     input.value = '';
-    this.showSuccess(`已新增 "${domain}" 到${modeText}`);
+    this.showSuccess(i18n.getMessage('domainAdded', domain, modeText));
   }
 
   async removeDomain(domain) {
     const currentSet = this.getCurrentDomainSet();
-    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
+    const modeText = this.filterMode === 'whitelist' ? i18n.getMessage('whitelist') : i18n.getMessage('blacklist');
     
     currentSet.delete(domain);
     await this.saveDomainSettings();
     this.renderCurrentDomainList();
-    this.showSuccess(`已從${modeText}移除 "${domain}"`);
+    this.showSuccess(i18n.getMessage('domainRemoved', domain, modeText));
   }
 
   async saveDomainSettings() {
@@ -203,18 +221,18 @@ class SettingsManager {
         domainWhitelist: Array.from(this.domainWhitelist)
       });
     } catch (error) {
-      this.showError('儲存域名設定時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('saveDomainError', error.message));
     }
   }
 
   renderDomainList(domainSet) {
     const container = document.getElementById('domain-list');
     const emptyState = document.getElementById('empty-state');
-    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
+    const modeText = this.filterMode === 'whitelist' ? i18n.getMessage('whitelist') : i18n.getMessage('blacklist');
 
     if (domainSet.size === 0) {
       emptyState.style.display = 'block';
-      emptyState.textContent = `尚未新增任何網域到${modeText}`;
+      emptyState.textContent = i18n.getMessage('noDomains', modeText);
       // Remove all domain items
       container.querySelectorAll('.domain-item').forEach(item => item.remove());
       return;
@@ -231,7 +249,7 @@ class SettingsManager {
       item.className = 'domain-item';
       item.innerHTML = `
         <span class="domain-name">${domain}</span>
-        <button class="remove-btn" data-domain="${domain}">移除</button>
+        <button class="remove-btn" data-domain="${domain}">${i18n.getMessage('remove')}</button>
       `;
 
       const removeBtn = item.querySelector('.remove-btn');
@@ -256,14 +274,14 @@ class SettingsManager {
       // Find most recent update
       const lastUpdated = allPages.length > 0 
         ? new Date(Math.max(...allPages.map(p => new Date(p.timestamp)))).toLocaleDateString()
-        : '無資料';
+        : i18n.getMessage('noData');
 
       document.getElementById('total-pages').textContent = allPages.length.toLocaleString();
       document.getElementById('total-size').textContent = this.formatBytes(approxSize);
       document.getElementById('last-updated').textContent = lastUpdated;
 
     } catch (error) {
-      this.showError('取得統計資訊時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('getStatsError', error.message));
     } finally {
       statsGrid.classList.remove('loading');
     }
@@ -308,22 +326,18 @@ class SettingsManager {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      this.showSuccess(`已匯出 ${allPages.length} 筆資料`);
+      this.showSuccess(i18n.getMessage('exportedData', allPages.length));
     } catch (error) {
-      this.showError('匯出資料時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('exportDataError', error.message));
     }
   }
 
   async clearDatabase() {
-    const confirmed = confirm(
-      '警告：此操作將永久刪除所有儲存的瀏覽記錄資料，無法復原。\n\n確定要繼續嗎？'
-    );
+    const confirmed = confirm(i18n.getMessage('clearDatabaseConfirm'));
 
     if (!confirmed) return;
 
-    const doubleConfirmed = confirm(
-      '最後確認：您確定要清空整個資料庫嗎？\n\n此操作無法復原！'
-    );
+    const doubleConfirmed = confirm(i18n.getMessage('clearDatabaseDoubleConfirm'));
 
     if (!doubleConfirmed) return;
 
@@ -332,10 +346,10 @@ class SettingsManager {
       await tx.objectStore('pages').clear();
       await tx.done;
 
-      this.showSuccess('資料庫已清空');
+      this.showSuccess(i18n.getMessage('databaseCleared'));
       await this.refreshStats();
     } catch (error) {
-      this.showError('清空資料庫時發生錯誤: ' + error.message);
+      this.showError(i18n.getMessage('clearDatabaseError', error.message));
     }
   }
 
@@ -348,6 +362,31 @@ class SettingsManager {
     // Basic domain regex - more permissive for development
     const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/;
     return domainRegex.test(domain) && domain.length > 0 && domain.length < 254;
+  }
+
+  async changeLanguage(language) {
+    try {
+      await i18n.setLanguage(language);
+      // Update current locale and re-localize elements
+      i18n.currentLocale = language;
+      i18n.setDocumentLanguage();
+      i18n.localizeElements();
+      
+      // Update UI for current mode to reflect new language
+      this.updateUIForCurrentMode();
+      this.renderCurrentDomainList();
+      
+      // Get the language name for the success message
+      const languageNames = {
+        'en': 'English',
+        'zh_TW': '繁體中文',
+        'ja': '日本語'
+      };
+      this.showSuccess(i18n.getMessage('languageChanged', languageNames[language]));
+      
+    } catch (error) {
+      this.showError(i18n.getMessage('saveSettingsError', error.message));
+    }
   }
 
   showSuccess(message) {

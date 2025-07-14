@@ -1,0 +1,494 @@
+{
+  "extensionName": {
+    "message": "FlexSearch Finder",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "CJKと西欧言語をサポートしたインテリジェントな全文検索ブラウジング履歴",
+    "description": "Extension description"
+  },
+  
+  "search": {
+    "message": "検索",
+    "description": "Search button or label"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Settings page title"
+  },
+  "cancel": {
+    "message": "キャンセル",
+    "description": "Cancel button"
+  },
+  "save": {
+    "message": "保存",
+    "description": "Save button"
+  },
+  "delete": {
+    "message": "削除",
+    "description": "Delete button"
+  },
+  "add": {
+    "message": "追加",
+    "description": "Add button"
+  },
+  "remove": {
+    "message": "削除",
+    "description": "Remove button"
+  },
+  "confirm": {
+    "message": "確認",
+    "description": "Confirm button"
+  },
+  "loading": {
+    "message": "読み込み中...",
+    "description": "Loading indicator"
+  },
+  "error": {
+    "message": "エラー",
+    "description": "Error message"
+  },
+  "success": {
+    "message": "成功",
+    "description": "Success message"
+  },
+
+  "quickSearch": {
+    "message": "クイック検索",
+    "description": "Quick search label in popup"
+  },
+  "searchPlaceholder": {
+    "message": "検索キーワードを入力...",
+    "description": "Search input placeholder"
+  },
+  "captureCurrentPage": {
+    "message": "現在のページをキャプチャ",
+    "description": "Capture current page button"
+  },
+  "openSearchPage": {
+    "message": "検索ページを開く",
+    "description": "Open search page button"
+  },
+  "openSettings": {
+    "message": "設定を開く",
+    "description": "Open settings button"
+  },
+  "captureSuccess": {
+    "message": "ページを正常に保存しました！",
+    "description": "Success message when page is captured"
+  },
+  "captureError": {
+    "message": "ページの保存に失敗しました：$ERROR$",
+    "description": "Error message when page capture fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "ネットワークエラー"
+      }
+    }
+  },
+  "cannotCapturePage": {
+    "message": "このページはキャプチャできません",
+    "description": "Error when page cannot be captured"
+  },
+  "processing": {
+    "message": "処理中...",
+    "description": "Processing indicator"
+  },
+
+  "searchPageTitle": {
+    "message": "履歴検索",
+    "description": "Search page title"
+  },
+  "searchResultsTitle": {
+    "message": "検索結果",
+    "description": "Search results section title"
+  },
+  "noResults": {
+    "message": "結果が見つかりませんでした",
+    "description": "No search results message"
+  },
+  "searchResultsCount": {
+    "message": "$COUNT$件の結果が見つかりました",
+    "description": "Search results count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "readingTime": {
+    "message": "$TIME$分で読む",
+    "description": "Reading time estimate",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "wordCount": {
+    "message": "$COUNT$語",
+    "description": "Word count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1000"
+      }
+    }
+  },
+  "lastVisited": {
+    "message": "最終訪問：$DATE$",
+    "description": "Last visited date",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2025-07-15"
+      }
+    }
+  },
+  "clearAllData": {
+    "message": "すべてのデータをクリア",
+    "description": "Clear all data button"
+  },
+  "clearDataConfirm": {
+    "message": "すべてのデータをクリアしてもよろしいですか？この操作は元に戻せません。",
+    "description": "Confirmation message for clearing all data"
+  },
+  "dataCleared": {
+    "message": "すべてのデータがクリアされました",
+    "description": "Success message after clearing data"
+  },
+
+  "settingsPageTitle": {
+    "message": "設定",
+    "description": "Settings page title"
+  },
+  "settingsPageSubtitle": {
+    "message": "FlexSearch Finderの設定を管理",
+    "description": "Settings page subtitle"
+  },
+  "autoCapture": {
+    "message": "自動キャプチャ",
+    "description": "Auto capture section title"
+  },
+  "autoCaptureDescription": {
+    "message": "Webページコンテンツの自動キャプチャ動作を制御",
+    "description": "Auto capture description"
+  },
+  "enableAutoCapture": {
+    "message": "自動キャプチャモードを有効にする",
+    "description": "Enable auto capture toggle label"
+  },
+  "autoCaptureEnabled": {
+    "message": "自動キャプチャが有効になりました",
+    "description": "Auto capture enabled message"
+  },
+  "autoCaptureDisabled": {
+    "message": "自動キャプチャが無効になりました",
+    "description": "Auto capture disabled message"
+  },
+  
+  "domainFiltering": {
+    "message": "ドメインフィルタリング",
+    "description": "Domain filtering section title"
+  },
+  "domainBlacklist": {
+    "message": "ドメインブラックリスト",
+    "description": "Domain blacklist title"
+  },
+  "domainWhitelist": {
+    "message": "ドメインホワイトリスト",
+    "description": "Domain whitelist title"
+  },
+  "blacklistDescription": {
+    "message": "以下のドメインを除外し、その他のドメインはキャプチャされます",
+    "description": "Blacklist mode description"
+  },
+  "whitelistDescription": {
+    "message": "以下のドメインのコンテンツのみをキャプチャし、その他のドメインは無視されます",
+    "description": "Whitelist mode description"
+  },
+  "filterMode": {
+    "message": "フィルターモード",
+    "description": "Filter mode label"
+  },
+  "blacklistMode": {
+    "message": "ブラックリストモード - 指定したドメインを除外",
+    "description": "Blacklist mode option"
+  },
+  "whitelistMode": {
+    "message": "ホワイトリストモード - 指定したドメインのみ許可",
+    "description": "Whitelist mode option"
+  },
+  "switchToBlacklist": {
+    "message": "ブラックリストモードに切り替えますか？",
+    "description": "Confirm switching to blacklist mode"
+  },
+  "switchToWhitelist": {
+    "message": "ホワイトリストモードに切り替えますか？",
+    "description": "Confirm switching to whitelist mode"
+  },
+  "switchedToBlacklist": {
+    "message": "ブラックリストモードに切り替えました",
+    "description": "Success message for switching to blacklist"
+  },
+  "switchedToWhitelist": {
+    "message": "ホワイトリストモードに切り替えました",
+    "description": "Success message for switching to whitelist"
+  },
+  "addDomain": {
+    "message": "ドメインを追加",
+    "description": "Add domain button"
+  },
+  "domainInputPlaceholder": {
+    "message": "ドメイン名を入力、例：example.com または *.google.com",
+    "description": "Domain input placeholder"
+  },
+  "domainAlreadyExists": {
+    "message": "このドメインは既に$MODE$に存在します",
+    "description": "Domain already exists error",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "ブラックリスト"
+      }
+    }
+  },
+  "invalidDomain": {
+    "message": "有効なドメイン形式を入力してください、例：example.com または *.google.com",
+    "description": "Invalid domain error"
+  },
+  "domainAdded": {
+    "message": "「$DOMAIN$」を$MODE$に追加しました",
+    "description": "Domain added success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "ブラックリスト"
+      }
+    }
+  },
+  "domainRemoved": {
+    "message": "「$DOMAIN$」を$MODE$から削除しました",
+    "description": "Domain removed success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "ブラックリスト"
+      }
+    }
+  },
+  "noDomains": {
+    "message": "$MODE$にドメインが追加されていません",
+    "description": "Empty domain list message",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "ブラックリスト"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "有効なドメイン名を入力してください",
+    "description": "Enter valid domain error"
+  },
+  "blacklist": {
+    "message": "ブラックリスト",
+    "description": "Blacklist term"
+  },
+  "whitelist": {
+    "message": "ホワイトリスト",
+    "description": "Whitelist term"
+  },
+
+  "databaseManagement": {
+    "message": "データベース管理",
+    "description": "Database management section title"
+  },
+  "databaseDescription": {
+    "message": "ストレージ統計を表示し、ローカルデータを管理",
+    "description": "Database management description"
+  },
+  "totalPages": {
+    "message": "総ページ数",
+    "description": "Total pages count label"
+  },
+  "approximateSize": {
+    "message": "概算サイズ",
+    "description": "Approximate size label"
+  },
+  "lastUpdated": {
+    "message": "最終更新",
+    "description": "Last updated label"
+  },
+  "noData": {
+    "message": "データなし",
+    "description": "No data indicator"
+  },
+  "refreshStats": {
+    "message": "統計を更新",
+    "description": "Refresh statistics button"
+  },
+  "exportData": {
+    "message": "データをエクスポート",
+    "description": "Export data button"
+  },
+  "clearDatabase": {
+    "message": "データベースをクリア",
+    "description": "Clear database button"
+  },
+  "clearDatabaseConfirm": {
+    "message": "警告：この操作により、保存されているすべてのブラウジング履歴データが永久に削除され、元に戻すことができません。\\n\\n続行してもよろしいですか？",
+    "description": "Clear database confirmation message"
+  },
+  "clearDatabaseDoubleConfirm": {
+    "message": "最終確認：データベース全体をクリアしてもよろしいですか？\\n\\nこの操作は元に戻せません！",
+    "description": "Clear database double confirmation message"
+  },
+  "databaseCleared": {
+    "message": "データベースがクリアされました",
+    "description": "Database cleared success message"
+  },
+  "exportedData": {
+    "message": "$COUNT$件のレコードをエクスポートしました",
+    "description": "Data exported success message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "backToSearch": {
+    "message": "検索に戻る",
+    "description": "Back to search button"
+  },
+  "backToSearchPage": {
+    "message": "検索ページに戻る",
+    "description": "Back to search page button"
+  },
+
+  "languageSettings": {
+    "message": "言語設定",
+    "description": "Language settings section title"
+  },
+  "languageDescription": {
+    "message": "お好みの言語を選択してください",
+    "description": "Language settings description"
+  },
+  "currentLanguage": {
+    "message": "現在の言語",
+    "description": "Current language label"
+  },
+  "selectLanguage": {
+    "message": "言語を選択",
+    "description": "Select language label"
+  },
+  "languageChanged": {
+    "message": "言語を$LANGUAGE$に変更しました",
+    "description": "Language changed success message",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "日本語"
+      }
+    }
+  },
+  "restartRequired": {
+    "message": "言語変更を適用するには拡張機能を再起動してください",
+    "description": "Restart required message"
+  },
+
+  "loadSettingsError": {
+    "message": "設定の読み込みエラー：$ERROR$",
+    "description": "Load settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "ネットワークエラー"
+      }
+    }
+  },
+  "saveSettingsError": {
+    "message": "設定の保存エラー：$ERROR$",
+    "description": "Save settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "ストレージエラー"
+      }
+    }
+  },
+  "saveDomainError": {
+    "message": "ドメイン設定の保存エラー：$ERROR$",
+    "description": "Save domain settings error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "ストレージエラー"
+      }
+    }
+  },
+  "getStatsError": {
+    "message": "統計の取得エラー：$ERROR$",
+    "description": "Get statistics error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "データベースエラー"
+      }
+    }
+  },
+  "exportDataError": {
+    "message": "データエクスポートエラー：$ERROR$",
+    "description": "Export data error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "ファイルシステムエラー"
+      }
+    }
+  },
+  "clearDatabaseError": {
+    "message": "データベースクリアエラー：$ERROR$",
+    "description": "Clear database error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "データベースエラー"
+      }
+    }
+  },
+  "visitCount": {
+    "message": "$COUNT$ 回訪問",
+    "description": "Visit count display",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "viewStoredContent": {
+    "message": "保存されたコンテンツを表示",
+    "description": "Link to view stored content"
+  },
+  "goToOriginalPage": {
+    "message": "元のページに移動",
+    "description": "Link to go to original page"
+  },
+  "storedContentPreview": {
+    "message": "保存されたコンテンツプレビュー",
+    "description": "Stored content preview header"
+  }
+}

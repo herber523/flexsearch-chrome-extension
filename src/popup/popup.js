@@ -1,5 +1,6 @@
 // popup/popup.js - 重構後的彈出視窗功能模組
 import { SKIP_URLS } from '../utils/constants.js';
+import i18n from '../shared/i18n.js';
 
 /**
  * 檢查 URL 是否應該跳過
@@ -70,7 +71,7 @@ function extractPageContent() {
 async function handleManualCapture(currentTab) {
   // 檢查是否為可捕獲的頁面
   if (!currentTab.url || shouldSkipUrl(currentTab.url)) {
-    showStatusMessage('無法捕獲此頁面', 'error');
+    showStatusMessage(i18n.getMessage('cannotCapturePage'), 'error');
     return;
   }
 
@@ -78,7 +79,7 @@ async function handleManualCapture(currentTab) {
   const originalText = captureBtn.textContent;
   
   // 顯示處理中狀態
-  captureBtn.textContent = '處理中...';
+  captureBtn.textContent = i18n.getMessage('processing');
   captureBtn.disabled = true;
 
   try {
@@ -89,12 +90,12 @@ async function handleManualCapture(currentTab) {
     });
 
     if (!results || results.length === 0) {
-      throw new Error('無法獲取頁面內容');
+      throw new Error(i18n.getMessage('cannotCapturePage'));
     }
 
     const pageData = results[0].result;
     if (!pageData || pageData.error) {
-      throw new Error(pageData?.error || '頁面內容解析失敗');
+      throw new Error(pageData?.error || i18n.getMessage('cannotCapturePage'));
     }
 
     // 將頁面資訊發送給背景腳本處理
@@ -106,13 +107,13 @@ async function handleManualCapture(currentTab) {
     });
 
     if (response && response.success) {
-      showStatusMessage('成功儲存此頁面！', 'success');
+      showStatusMessage(i18n.getMessage('captureSuccess'), 'success');
     } else {
-      throw new Error(response?.error || '未知錯誤');
+      throw new Error(response?.error || i18n.getMessage('captureError'));
     }
   } catch (error) {
     console.error('捕獲頁面時發生錯誤:', error);
-    showStatusMessage(`儲存頁面失敗: ${error.message}`, 'error');
+    showStatusMessage(i18n.getMessage('captureError', error.message), 'error');
   } finally {
     // 恢復按鈕狀態
     captureBtn.textContent = originalText;
@@ -127,7 +128,7 @@ async function handleManualCapture(currentTab) {
 function handleQuickSearch(query) {
   if (query.trim()) {
     chrome.tabs.create({
-      url: `${chrome.runtime.getURL('search/index.html')}?q=${encodeURIComponent(query)}`
+      url: `${chrome.runtime.getURL('index.html')}?q=${encodeURIComponent(query)}`
     });
   }
 }
@@ -137,7 +138,7 @@ function handleQuickSearch(query) {
  */
 function openSearchPage() {
   chrome.tabs.create({ 
-    url: chrome.runtime.getURL('search/index.html') 
+    url: chrome.runtime.getURL('index.html') 
   });
 }
 
@@ -146,14 +147,26 @@ function openSearchPage() {
  */
 function openSettingsPage() {
   chrome.tabs.create({ 
-    url: chrome.runtime.getURL('settings/settings.html') 
+    url: chrome.runtime.getURL('settings.html') 
   });
 }
 
 /**
  * 初始化彈出視窗功能
  */
-function initializePopup() {
+async function initializePopup() {
+  try {
+    // Initialize i18n first and apply user language preference
+    await i18n.init();
+    
+    // Explicitly localize elements after i18n is initialized
+    i18n.localizeElements();
+    
+    console.log('Popup initialized with language:', i18n.getCurrentLocale());
+  } catch (error) {
+    console.error('Failed to initialize i18n:', error);
+  }
+  
   // 開啟搜尋頁面按鈕
   const openSearchBtn = document.getElementById('open-search-page');
   if (openSearchBtn) {

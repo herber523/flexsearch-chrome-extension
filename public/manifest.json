@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "FlexSearch Finder",
+  "name": "__MSG_extensionName__",
   "version": "1.0.0",
-  "description": "使用 FlexSearch + IndexedDB 的全文搜尋工具",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "permissions": [
     "storage",
     "tabs",

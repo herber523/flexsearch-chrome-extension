@@ -1,0 +1,495 @@
+{
+  "extensionName": {
+    "message": "FlexSearch Finder",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "Intelligent full-text search for browsing history with CJK and Western language support",
+    "description": "Extension description"
+  },
+  
+  "search": {
+    "message": "Search",
+    "description": "Search button or label"
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Settings page title"
+  },
+  "cancel": {
+    "message": "Cancel",
+    "description": "Cancel button"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button"
+  },
+  "delete": {
+    "message": "Delete",
+    "description": "Delete button"
+  },
+  "add": {
+    "message": "Add",
+    "description": "Add button"
+  },
+  "remove": {
+    "message": "Remove",
+    "description": "Remove button"
+  },
+  "confirm": {
+    "message": "Confirm",
+    "description": "Confirm button"
+  },
+  "loading": {
+    "message": "Loading...",
+    "description": "Loading indicator"
+  },
+  "error": {
+    "message": "Error",
+    "description": "Error message"
+  },
+  "success": {
+    "message": "Success",
+    "description": "Success message"
+  },
+
+  "quickSearch": {
+    "message": "Quick Search",
+    "description": "Quick search label in popup"
+  },
+  "searchPlaceholder": {
+    "message": "Enter search keywords...",
+    "description": "Search input placeholder"
+  },
+  "captureCurrentPage": {
+    "message": "Capture Current Page",
+    "description": "Capture current page button"
+  },
+  "openSearchPage": {
+    "message": "Open Search Page",
+    "description": "Open search page button"
+  },
+  "openSettings": {
+    "message": "Open Settings",
+    "description": "Open settings button"
+  },
+  "captureSuccess": {
+    "message": "Page captured successfully!",
+    "description": "Success message when page is captured"
+  },
+  "captureError": {
+    "message": "Failed to capture page: $ERROR$",
+    "description": "Error message when page capture fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "cannotCapturePage": {
+    "message": "Cannot capture this page",
+    "description": "Error when page cannot be captured"
+  },
+  "processing": {
+    "message": "Processing...",
+    "description": "Processing indicator"
+  },
+
+  "searchPageTitle": {
+    "message": "Search History",
+    "description": "Search page title"
+  },
+  "searchResultsTitle": {
+    "message": "Search Results",
+    "description": "Search results section title"
+  },
+  "noResults": {
+    "message": "No results found",
+    "description": "No search results message"
+  },
+  "searchResultsCount": {
+    "message": "$COUNT$ results found",
+    "description": "Search results count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "42"
+      }
+    }
+  },
+  "readingTime": {
+    "message": "$TIME$ min read",
+    "description": "Reading time estimate",
+    "placeholders": {
+      "time": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "wordCount": {
+    "message": "$COUNT$ words",
+    "description": "Word count",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1000"
+      }
+    }
+  },
+  "lastVisited": {
+    "message": "Last visited: $DATE$",
+    "description": "Last visited date",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "2025-07-15"
+      }
+    }
+  },
+  "clearAllData": {
+    "message": "Clear All Data",
+    "description": "Clear all data button"
+  },
+  "clearDataConfirm": {
+    "message": "Are you sure you want to clear all data? This action cannot be undone.",
+    "description": "Confirmation message for clearing all data"
+  },
+  "dataCleared": {
+    "message": "All data has been cleared",
+    "description": "Success message after clearing data"
+  },
+
+  "settingsPageTitle": {
+    "message": "Settings",
+    "description": "Settings page title"
+  },
+  "settingsPageSubtitle": {
+    "message": "Manage FlexSearch Finder preferences",
+    "description": "Settings page subtitle"
+  },
+  "autoCapture": {
+    "message": "Auto Capture",
+    "description": "Auto capture section title"
+  },
+  "autoCaptureDescription": {
+    "message": "Control automatic web page content capture behavior",
+    "description": "Auto capture description"
+  },
+  "enableAutoCapture": {
+    "message": "Enable auto capture mode",
+    "description": "Enable auto capture toggle label"
+  },
+  "autoCaptureEnabled": {
+    "message": "Auto capture enabled",
+    "description": "Auto capture enabled message"
+  },
+  "autoCaptureDisabled": {
+    "message": "Auto capture disabled",
+    "description": "Auto capture disabled message"
+  },
+  
+  "domainFiltering": {
+    "message": "Domain Filtering",
+    "description": "Domain filtering section title"
+  },
+  "domainBlacklist": {
+    "message": "Domain Blacklist",
+    "description": "Domain blacklist title"
+  },
+  "domainWhitelist": {
+    "message": "Domain Whitelist",
+    "description": "Domain whitelist title"
+  },
+  "blacklistDescription": {
+    "message": "Exclude the following domains, all other domains will be captured",
+    "description": "Blacklist mode description"
+  },
+  "whitelistDescription": {
+    "message": "Only capture content from the following domains, all other domains will be ignored",
+    "description": "Whitelist mode description"
+  },
+  "filterMode": {
+    "message": "Filter Mode",
+    "description": "Filter mode label"
+  },
+  "blacklistMode": {
+    "message": "Blacklist Mode - Exclude specified domains",
+    "description": "Blacklist mode option"
+  },
+  "whitelistMode": {
+    "message": "Whitelist Mode - Allow only specified domains",
+    "description": "Whitelist mode option"
+  },
+  "switchToBlacklist": {
+    "message": "Switch to blacklist mode?",
+    "description": "Confirm switching to blacklist mode"
+  },
+  "switchToWhitelist": {
+    "message": "Switch to whitelist mode?",
+    "description": "Confirm switching to whitelist mode"
+  },
+  "switchedToBlacklist": {
+    "message": "Switched to blacklist mode",
+    "description": "Success message for switching to blacklist"
+  },
+  "switchedToWhitelist": {
+    "message": "Switched to whitelist mode",
+    "description": "Success message for switching to whitelist"
+  },
+  "addDomain": {
+    "message": "Add Domain",
+    "description": "Add domain button"
+  },
+  "domainInputPlaceholder": {
+    "message": "Enter domain name, e.g.: example.com or *.google.com",
+    "description": "Domain input placeholder"
+  },
+  "domainAlreadyExists": {
+    "message": "This domain already exists in $MODE$",
+    "description": "Domain already exists error",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "blacklist"
+      }
+    }
+  },
+  "invalidDomain": {
+    "message": "Please enter a valid domain format, e.g.: example.com or *.google.com",
+    "description": "Invalid domain error"
+  },
+  "domainAdded": {
+    "message": "Added \"$DOMAIN$\" to $MODE$",
+    "description": "Domain added success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "blacklist"
+      }
+    }
+  },
+  "domainRemoved": {
+    "message": "Removed \"$DOMAIN$\" from $MODE$",
+    "description": "Domain removed success message",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      },
+      "mode": {
+        "content": "$2",
+        "example": "blacklist"
+      }
+    }
+  },
+  "noDomains": {
+    "message": "No domains added to $MODE$ yet",
+    "description": "Empty domain list message",
+    "placeholders": {
+      "mode": {
+        "content": "$1",
+        "example": "blacklist"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "Please enter a valid domain name",
+    "description": "Enter valid domain error"
+  },
+  "blacklist": {
+    "message": "blacklist",
+    "description": "Blacklist term"
+  },
+  "whitelist": {
+    "message": "whitelist",
+    "description": "Whitelist term"
+  },
+
+  "databaseManagement": {
+    "message": "Database Management",
+    "description": "Database management section title"
+  },
+  "databaseDescription": {
+    "message": "View storage statistics and manage local data",
+    "description": "Database management description"
+  },
+  "totalPages": {
+    "message": "Total Pages",
+    "description": "Total pages count label"
+  },
+  "approximateSize": {
+    "message": "Approximate Size",
+    "description": "Approximate size label"
+  },
+  "lastUpdated": {
+    "message": "Last Updated",
+    "description": "Last updated label"
+  },
+  "noData": {
+    "message": "No data",
+    "description": "No data indicator"
+  },
+  "refreshStats": {
+    "message": "Refresh Statistics",
+    "description": "Refresh statistics button"
+  },
+  "exportData": {
+    "message": "Export Data",
+    "description": "Export data button"
+  },
+  "clearDatabase": {
+    "message": "Clear Database",
+    "description": "Clear database button"
+  },
+  "clearDatabaseConfirm": {
+    "message": "Warning: This operation will permanently delete all stored browsing history data and cannot be undone.\\n\\nAre you sure you want to continue?",
+    "description": "Clear database confirmation message"
+  },
+  "clearDatabaseDoubleConfirm": {
+    "message": "Final confirmation: Are you sure you want to clear the entire database?\\n\\nThis action cannot be undone!",
+    "description": "Clear database double confirmation message"
+  },
+  "databaseCleared": {
+    "message": "Database cleared",
+    "description": "Database cleared success message"
+  },
+  "exportedData": {
+    "message": "Exported $COUNT$ records",
+    "description": "Data exported success message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "backToSearch": {
+    "message": "Back to Search",
+    "description": "Back to search button"
+  },
+  "backToSearchPage": {
+    "message": "Back to Search Page",
+    "description": "Back to search page button"
+  },
+
+  "languageSettings": {
+    "message": "Language Settings",
+    "description": "Language settings section title"
+  },
+  "languageDescription": {
+    "message": "Choose your preferred language",
+    "description": "Language settings description"
+  },
+  "currentLanguage": {
+    "message": "Current Language",
+    "description": "Current language label"
+  },
+  "selectLanguage": {
+    "message": "Select Language",
+    "description": "Select language label"
+  },
+  "languageChanged": {
+    "message": "Language changed to $LANGUAGE$",
+    "description": "Language changed success message",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "English"
+      }
+    }
+  },
+  "restartRequired": {
+    "message": "Please restart the extension to apply language changes",
+    "description": "Restart required message"
+  },
+
+  "visitCount": {
+    "message": "Visited $COUNT$ times",
+    "description": "Visit count display",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "viewStoredContent": {
+    "message": "View Stored Content",
+    "description": "Link to view stored content"
+  },
+  "goToOriginalPage": {
+    "message": "Go to Original Page",
+    "description": "Link to go to original page"
+  },
+  "storedContentPreview": {
+    "message": "Stored Content Preview",
+    "description": "Stored content preview header"
+  },
+
+  "loadSettingsError": {
+    "message": "Error loading settings: $ERROR$",
+    "description": "Load settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "saveSettingsError": {
+    "message": "Error saving settings: $ERROR$",
+    "description": "Save settings error message",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage error"
+      }
+    }
+  },
+  "saveDomainError": {
+    "message": "Error saving domain settings: $ERROR$",
+    "description": "Save domain settings error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Storage error"
+      }
+    }
+  },
+  "getStatsError": {
+    "message": "Error getting statistics: $ERROR$",
+    "description": "Get statistics error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Database error"
+      }
+    }
+  },
+  "exportDataError": {
+    "message": "Error exporting data: $ERROR$",
+    "description": "Export data error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "File system error"
+      }
+    }
+  },
+  "clearDatabaseError": {
+    "message": "Error clearing database: $ERROR$",
+    "description": "Clear database error",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Database error"
+      }
+    }
+  }
+}
