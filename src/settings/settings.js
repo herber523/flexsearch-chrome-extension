@@ -12,11 +12,11 @@ class SettingsManager {
 
   async init() {
     await this.initDB();
+    // Initialize i18n first
+    await i18n.init();
     await this.loadSettings();
     this.bindEvents();
     await this.refreshStats();
-    // Initialize i18n after DOM is ready
-    i18n.init();
   }
 
   async initDB() {
@@ -60,9 +60,14 @@ class SettingsManager {
 
       // Load language setting and update dropdown
       const languageSelect = document.getElementById('language-select');
-      const currentLanguage = result.userLanguage || i18n.getCurrentLocale();
+      const currentLanguage = result.userLanguage || i18n.getBestMatchingLocale(i18n.currentLocale);
       if (languageSelect) {
         languageSelect.value = currentLanguage;
+        // Set the user selected locale if different from browser locale
+        if (currentLanguage !== i18n.currentLocale) {
+          i18n.userSelectedLocale = currentLanguage;
+          await i18n.loadMessages(currentLanguage);
+        }
       }
 
       this.updateUIForCurrentMode();
@@ -367,11 +372,7 @@ class SettingsManager {
   async changeLanguage(language) {
     try {
       await i18n.setLanguage(language);
-      // Update current locale and re-localize elements
-      i18n.currentLocale = language;
-      i18n.setDocumentLanguage();
-      i18n.localizeElements();
-
+      
       // Update UI for current mode to reflect new language
       this.updateUIForCurrentMode();
       this.renderCurrentDomainList();

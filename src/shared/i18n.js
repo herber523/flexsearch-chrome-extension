@@ -28,18 +28,18 @@ class I18nManager {
         substitutionsArray = [];
       }
 
-      // First try Chrome's i18n API (this handles placeholders correctly)
-      const chromeMessage = chrome.i18n.getMessage(messageKey, substitutionsArray);
-      if (chromeMessage) {
-        return chromeMessage;
-      }
-
-      // If user has selected a different locale, try cached messages
+      // If user has selected a different locale, try cached messages first
       if (this.userSelectedLocale && this.messages[this.userSelectedLocale]) {
         const message = this.messages[this.userSelectedLocale][messageKey];
         if (message) {
           return this.formatMessage(message, substitutionsArray);
         }
+      }
+
+      // Fallback to Chrome's i18n API (this handles placeholders correctly)
+      const chromeMessage = chrome.i18n.getMessage(messageKey, substitutionsArray);
+      if (chromeMessage) {
+        return chromeMessage;
       }
       
       // Fallback to key if message not found
@@ -57,7 +57,7 @@ class I18nManager {
    * @returns {string} Formatted message
    */
   formatMessage(message, substitutions) {
-    if (!substitutions) {
+    if (!substitutions || substitutions.length === 0) {
       return message;
     }
 
@@ -69,19 +69,16 @@ class I18nManager {
       substitutionsArray = [substitutions];
     }
 
-    if (substitutionsArray.length === 0) {
-      return message;
-    }
-
     let formatted = message;
     
-    // Handle both numbered placeholders ($1, $2, etc.) and named placeholders ($TIME$, $COUNT$, etc.)
+    // Handle both numbered placeholders ($1, $2, etc.) and named placeholders ($LANGUAGE$, $COUNT$, etc.)
     substitutionsArray.forEach((sub, index) => {
       // Replace numbered placeholders
-      formatted = formatted.replace(`$${index + 1}`, sub);
+      formatted = formatted.replace(new RegExp(`\\$${index + 1}`, 'g'), sub);
       
       // Also handle common named placeholders for backward compatibility
       if (index === 0) {
+        formatted = formatted.replace(/\$LANGUAGE\$/g, sub);
         formatted = formatted.replace(/\$TIME\$/g, sub);
         formatted = formatted.replace(/\$COUNT\$/g, sub);
         formatted = formatted.replace(/\$DATE\$/g, sub);
@@ -310,6 +307,10 @@ class I18nManager {
 
       // Load messages for the new locale
       await this.loadMessages(locale);
+
+      // Re-initialize UI with new language
+      this.setDocumentLanguage();
+      this.localizeElements();
 
       return true;
     } catch (error) {
