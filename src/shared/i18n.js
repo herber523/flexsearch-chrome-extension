@@ -10,30 +10,40 @@ class I18nManager {
     this.fallbackLocale = 'en';
     this.messages = {}; // Cache for messages
     this.userSelectedLocale = null; // User-selected locale
-  }
-
-  /**
+  }  /**
    * Get translated message
    * @param {string} messageKey - The message key
-   * @param {Array} substitutions - Optional substitutions for placeholders
+   * @param {Array|string|number} substitutions - Optional substitutions for placeholders
    * @returns {string} Translated message
    */
   getMessage(messageKey, substitutions = []) {
     try {
-      // Use user-selected locale if available, otherwise use Chrome's default
-      const locale = this.userSelectedLocale || this.currentLocale;
-      
-      // If we have cached messages for user-selected locale, use them
+      // Convert substitutions to array if it's not already
+      let substitutionsArray;
+      if (Array.isArray(substitutions)) {
+        substitutionsArray = substitutions;
+      } else if (substitutions !== null && substitutions !== undefined) {
+        substitutionsArray = [substitutions];
+      } else {
+        substitutionsArray = [];
+      }
+
+      // First try Chrome's i18n API (this handles placeholders correctly)
+      const chromeMessage = chrome.i18n.getMessage(messageKey, substitutionsArray);
+      if (chromeMessage) {
+        return chromeMessage;
+      }
+
+      // If user has selected a different locale, try cached messages
       if (this.userSelectedLocale && this.messages[this.userSelectedLocale]) {
         const message = this.messages[this.userSelectedLocale][messageKey];
         if (message) {
-          return this.formatMessage(message, substitutions);
+          return this.formatMessage(message, substitutionsArray);
         }
       }
       
-      // Fallback to Chrome's i18n API
-      const message = chrome.i18n.getMessage(messageKey, substitutions);
-      return message || messageKey; // Fallback to key if message not found
+      // Fallback to key if message not found
+      return messageKey;
     } catch (error) {
       console.warn(`i18n: Failed to get message for key "${messageKey}":`, error);
       return messageKey;
@@ -43,19 +53,42 @@ class I18nManager {
   /**
    * Format message with substitutions
    * @param {string} message - Message template
-   * @param {Array} substitutions - Substitution values
+   * @param {Array|string|number} substitutions - Substitution values
    * @returns {string} Formatted message
    */
   formatMessage(message, substitutions) {
-    if (!substitutions || substitutions.length === 0) {
+    if (!substitutions) {
       return message;
     }
-    
+
+    // Convert substitutions to array if it's not already
+    let substitutionsArray;
+    if (Array.isArray(substitutions)) {
+      substitutionsArray = substitutions;
+    } else {
+      substitutionsArray = [substitutions];
+    }
+
+    if (substitutionsArray.length === 0) {
+      return message;
+    }
+
     let formatted = message;
-    substitutions.forEach((sub, index) => {
-      formatted = formatted.replace(`$${index + 1}`, sub);
-    });
     
+    // Handle both numbered placeholders ($1, $2, etc.) and named placeholders ($TIME$, $COUNT$, etc.)
+    substitutionsArray.forEach((sub, index) => {
+      // Replace numbered placeholders
+      formatted = formatted.replace(`$${index + 1}`, sub);
+      
+      // Also handle common named placeholders for backward compatibility
+      if (index === 0) {
+        formatted = formatted.replace(/\$TIME\$/g, sub);
+        formatted = formatted.replace(/\$COUNT\$/g, sub);
+        formatted = formatted.replace(/\$DATE\$/g, sub);
+        formatted = formatted.replace(/\$VALUE\$/g, sub);
+      }
+    });
+
     return formatted;
   }
 
@@ -68,13 +101,13 @@ class I18nManager {
     try {
       const response = await fetch(chrome.runtime.getURL(`_locales/${locale}/messages.json`));
       const messages = await response.json();
-      
+
       // Convert Chrome extension format to simple key-value pairs
       const simplified = {};
       for (const [key, value] of Object.entries(messages)) {
         simplified[key] = value.message;
       }
-      
+
       this.messages[locale] = simplified;
       return simplified;
     } catch (error) {
@@ -112,7 +145,7 @@ class I18nManager {
 
     // Try to match language part (e.g., 'zh' from 'zh_CN')
     const language = preferredLocale.split('_')[0];
-    const matchingLocale = this.supportedLocales.find(locale => 
+    const matchingLocale = this.supportedLocales.find(locale =>
       locale.startsWith(language)
     );
 
@@ -141,13 +174,13 @@ class I18nManager {
   getPluralMessage(messageKey, count, substitutions = []) {
     // Simple plural logic - can be extended for more complex rules
     const pluralKey = count === 1 ? `${messageKey}_singular` : `${messageKey}_plural`;
-    
+
     // Try plural key first, fallback to base key
     let message = chrome.i18n.getMessage(pluralKey, [count, ...substitutions]);
     if (!message) {
       message = chrome.i18n.getMessage(messageKey, [count, ...substitutions]);
     }
-    
+
     return message || `${messageKey} (${count})`;
   }
 
@@ -157,11 +190,11 @@ class I18nManager {
    */
   localizeElements(container = document) {
     const elements = container.querySelectorAll('[data-i18n]');
-    
+
     elements.forEach(element => {
       const messageKey = element.getAttribute('data-i18n');
       const substitutions = element.getAttribute('data-i18n-args');
-      
+
       let args = [];
       if (substitutions) {
         try {
@@ -172,7 +205,7 @@ class I18nManager {
       }
 
       const translatedText = this.getMessage(messageKey, args);
-      
+
       // Check if we should set innerHTML or textContent
       if (element.hasAttribute('data-i18n-html')) {
         element.innerHTML = translatedText;
@@ -202,7 +235,7 @@ class I18nManager {
   setDocumentLanguage() {
     const html = document.documentElement;
     const locale = this.userSelectedLocale || this.currentLocale;
-    
+
     html.setAttribute('lang', locale.replace('_', '-'));
     html.setAttribute('dir', this.isRTL(locale) ? 'rtl' : 'ltr');
   }
@@ -250,13 +283,13 @@ class I18nManager {
     try {
       // Load user's language preference first
       const userLanguage = await this.getUserPreference();
-      
+
       // If user has selected a different language, load its messages
       if (userLanguage !== this.currentLocale) {
         this.userSelectedLocale = userLanguage;
         await this.loadMessages(userLanguage);
       }
-      
+
       this.setDocumentLanguage();
       this.localizeElements();
       return true;
@@ -274,10 +307,10 @@ class I18nManager {
     try {
       await this.setUserPreference(locale);
       this.userSelectedLocale = locale;
-      
+
       // Load messages for the new locale
       await this.loadMessages(locale);
-      
+
       return true;
     } catch (error) {
       console.error('Failed to set language:', error);

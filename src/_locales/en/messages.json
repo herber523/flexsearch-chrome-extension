@@ -7,7 +7,6 @@
     "message": "Intelligent full-text search for browsing history with CJK and Western language support",
     "description": "Extension description"
   },
-  
   "search": {
     "message": "Search",
     "description": "Search button or label"
@@ -52,7 +51,6 @@
     "message": "Success",
     "description": "Success message"
   },
-
   "quickSearch": {
     "message": "Quick Search",
     "description": "Quick search label in popup"
@@ -95,7 +93,6 @@
     "message": "Processing...",
     "description": "Processing indicator"
   },
-
   "searchPageTitle": {
     "message": "Search History",
     "description": "Search page title"
@@ -160,7 +157,6 @@
     "message": "All data has been cleared",
     "description": "Success message after clearing data"
   },
-
   "settingsPageTitle": {
     "message": "Settings",
     "description": "Settings page title"
@@ -189,7 +185,6 @@
     "message": "Auto capture disabled",
     "description": "Auto capture disabled message"
   },
-  
   "domainFiltering": {
     "message": "Domain Filtering",
     "description": "Domain filtering section title"
@@ -310,7 +305,6 @@
     "message": "whitelist",
     "description": "Whitelist term"
   },
-
   "databaseManagement": {
     "message": "Database Management",
     "description": "Database management section title"
@@ -377,7 +371,6 @@
     "message": "Back to Search Page",
     "description": "Back to search page button"
   },
-
   "languageSettings": {
     "message": "Language Settings",
     "description": "Language settings section title"
@@ -408,7 +401,6 @@
     "message": "Please restart the extension to apply language changes",
     "description": "Restart required message"
   },
-
   "visitCount": {
     "message": "Visited $COUNT$ times",
     "description": "Visit count display",
@@ -431,7 +423,6 @@
     "message": "Stored Content Preview",
     "description": "Stored content preview header"
   },
-
   "loadSettingsError": {
     "message": "Error loading settings: $ERROR$",
     "description": "Load settings error message",

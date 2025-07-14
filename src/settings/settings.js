@@ -36,13 +36,13 @@ class SettingsManager {
     try {
       // Load settings with migration support
       const result = await chrome.storage.local.get([
-        'autoCaptureEnabled', 
-        'filterMode', 
-        'domainBlacklist', 
+        'autoCaptureEnabled',
+        'filterMode',
+        'domainBlacklist',
         'domainWhitelist',
         'userLanguage'
       ]);
-      
+
       // Migration for old data structure
       if (result.domainBlacklist && !result.filterMode) {
         this.filterMode = 'blacklist';
@@ -57,14 +57,14 @@ class SettingsManager {
       // Load domain lists
       this.domainBlacklist = new Set(result.domainBlacklist || []);
       this.domainWhitelist = new Set(result.domainWhitelist || []);
-      
+
       // Load language setting and update dropdown
       const languageSelect = document.getElementById('language-select');
       const currentLanguage = result.userLanguage || i18n.getCurrentLocale();
       if (languageSelect) {
         languageSelect.value = currentLanguage;
       }
-      
+
       this.updateUIForCurrentMode();
       this.renderCurrentDomainList();
     } catch (error) {
@@ -153,14 +153,14 @@ class SettingsManager {
   updateUIForCurrentMode() {
     // Update radio buttons
     document.querySelector(`input[name="filterMode"][value="${this.filterMode}"]`).checked = true;
-    
+
     // Update section title and description
     const isWhitelist = this.filterMode === 'whitelist';
     const sectionTitle = document.querySelector('.domain-section .section-title');
     const description = document.querySelector('.domain-section .section-description');
-    
+
     sectionTitle.textContent = isWhitelist ? `🎯 ${i18n.getMessage('domainWhitelist')}` : `🚫 ${i18n.getMessage('domainBlacklist')}`;
-    description.textContent = isWhitelist 
+    description.textContent = isWhitelist
       ? i18n.getMessage('whitelistDescription')
       : i18n.getMessage('blacklistDescription');
   }
@@ -207,7 +207,7 @@ class SettingsManager {
   async removeDomain(domain) {
     const currentSet = this.getCurrentDomainSet();
     const modeText = this.filterMode === 'whitelist' ? i18n.getMessage('whitelist') : i18n.getMessage('blacklist');
-    
+
     currentSet.delete(domain);
     await this.saveDomainSettings();
     this.renderCurrentDomainList();
@@ -216,7 +216,7 @@ class SettingsManager {
 
   async saveDomainSettings() {
     try {
-      await chrome.storage.local.set({ 
+      await chrome.storage.local.set({
         domainBlacklist: Array.from(this.domainBlacklist),
         domainWhitelist: Array.from(this.domainWhitelist)
       });
@@ -239,7 +239,7 @@ class SettingsManager {
     }
 
     emptyState.style.display = 'none';
-    
+
     // Clear existing items
     container.querySelectorAll('.domain-item').forEach(item => item.remove());
 
@@ -267,12 +267,12 @@ class SettingsManager {
 
     try {
       const allPages = await this.db.getAll('pages');
-      
+
       // Calculate approximate size
       const approxSize = this.calculateApproximateSize(allPages);
-      
+
       // Find most recent update
-      const lastUpdated = allPages.length > 0 
+      const lastUpdated = allPages.length > 0
         ? new Date(Math.max(...allPages.map(p => new Date(p.timestamp)))).toLocaleDateString()
         : i18n.getMessage('noData');
 
@@ -371,11 +371,11 @@ class SettingsManager {
       i18n.currentLocale = language;
       i18n.setDocumentLanguage();
       i18n.localizeElements();
-      
+
       // Update UI for current mode to reflect new language
       this.updateUIForCurrentMode();
       this.renderCurrentDomainList();
-      
+
       // Get the language name for the success message
       const languageNames = {
         'en': 'English',
@@ -383,7 +383,7 @@ class SettingsManager {
         'ja': '日本語'
       };
       this.showSuccess(i18n.getMessage('languageChanged', languageNames[language]));
-      
+
     } catch (error) {
       this.showError(i18n.getMessage('saveSettingsError', error.message));
     }
@@ -392,11 +392,11 @@ class SettingsManager {
   showSuccess(message) {
     const successDiv = document.getElementById('success-message');
     const errorDiv = document.getElementById('error-message');
-    
+
     errorDiv.style.display = 'none';
     successDiv.textContent = message;
     successDiv.style.display = 'block';
-    
+
     setTimeout(() => {
       successDiv.style.display = 'none';
     }, 3000);
@@ -405,11 +405,11 @@ class SettingsManager {
   showError(message) {
     const successDiv = document.getElementById('success-message');
     const errorDiv = document.getElementById('error-message');
-    
+
     successDiv.style.display = 'none';
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
-    
+
     setTimeout(() => {
       errorDiv.style.display = 'none';
     }, 5000);

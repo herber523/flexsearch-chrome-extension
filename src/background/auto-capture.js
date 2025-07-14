@@ -9,36 +9,55 @@ const tabUrls = new Map();
 /**
  * 檢查 URL 是否應該跳過
  * @param {string} url 要檢查的 URL
+ * @param {string} filterMode 過濾模式 ('blacklist' 或 'whitelist')
  * @param {Set<string>} domainBlacklist 網域黑名單
+ * @param {Set<string>} domainWhitelist 網域白名單
  * @returns {boolean} 是否應該跳過
  */
-function shouldSkipUrl(url, domainBlacklist = new Set()) {
+function shouldSkipUrl(url, filterMode = 'blacklist', domainBlacklist = new Set(), domainWhitelist = new Set()) {
   // 檢查預設跳過的 URL
   if (SKIP_URLS.some(skipUrl => url.startsWith(skipUrl))) {
     return true;
   }
 
-  // 檢查網域黑名單
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
 
-    // 檢查完整網域匹配
-    if (domainBlacklist.has(hostname)) {
-      return true;
-    }
-
-    // 檢查萬用字元匹配 (*.example.com)
-    for (const blacklistedDomain of domainBlacklist) {
-      if (blacklistedDomain.startsWith('*.')) {
-        const pattern = blacklistedDomain.substring(2);
-        if (hostname.endsWith('.' + pattern) || hostname === pattern) {
-          return true;
-        }
-      }
+    // 根據過濾模式決定邏輯
+    if (filterMode === 'whitelist') {
+      // 白名單模式：只有在白名單中的域名才不跳過
+      return !isHostnameInDomainList(hostname, domainWhitelist);
+    } else {
+      // 黑名單模式：在黑名單中的域名要跳過
+      return isHostnameInDomainList(hostname, domainBlacklist);
     }
   } catch (error) {
-    console.warn('[AutoCapture] Invalid URL for blacklist check:', url, error);
+    console.warn('[AutoCapture] Invalid URL for domain check:', url, error);
+    return true; // 無效 URL 默認跳過
+  }
+}
+
+/**
+ * 檢查主機名是否在域名列表中
+ * @param {string} hostname 主機名
+ * @param {Set<string>} domainList 域名列表
+ * @returns {boolean} 是否在列表中
+ */
+function isHostnameInDomainList(hostname, domainList) {
+  // 檢查完整網域匹配
+  if (domainList.has(hostname)) {
+    return true;
+  }
+
+  // 檢查萬用字元匹配 (*.example.com)
+  for (const domain of domainList) {
+    if (domain.startsWith('*.')) {
+      const pattern = domain.substring(2);
+      if (hostname.endsWith('.' + pattern) || hostname === pattern) {
+        return true;
+      }
+    }
   }
 
   return false;
@@ -51,11 +70,21 @@ function shouldSkipUrl(url, domainBlacklist = new Set()) {
  * @param {boolean} isSPA 是否為 SPA 導航
  */
 export async function handlePageCapture(tabId, tab, isSPA = false) {
-  // 取得網域黑名單
-  const storage = await chrome.storage.local.get(['domainBlacklist']);
-  const domainBlacklist = new Set(storage.domainBlacklist || []);
+  // 取得域名過濾設定
+  const storage = await chrome.storage.local.get([
+    'filterMode',
+    'domainBlacklist',
+    'domainWhitelist'
+  ]);
   
-  if (!tab || !tab.url || shouldSkipUrl(tab.url, domainBlacklist)) return;
+  const filterMode = storage.filterMode || 'blacklist';
+  const domainBlacklist = new Set(storage.domainBlacklist || []);
+  const domainWhitelist = new Set(storage.domainWhitelist || []);
+  
+  if (!tab || !tab.url || shouldSkipUrl(tab.url, filterMode, domainBlacklist, domainWhitelist)) {
+    console.debug('[AutoCapture] Skipping URL:', tab.url, 'Mode:', filterMode);
+    return;
+  }
 
   console.debug('[AutoCapture] Capturing page:', tab.url, isSPA ? '(SPA)' : '(Regular)');
 

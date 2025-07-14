@@ -1,6 +1,6 @@
 // background/background.js - 主要的背景服務腳本
-import { initializeDB, savePage, getAllPages } from '../shared/database.js';
-import { createSearchIndex, loadPagesToIndex, addToIndex, updateInIndex } from '../shared/search-engine.js';
+import { getAllPages, initializeDB, savePage } from '../shared/database.js';
+import { addToIndex, createSearchIndex, loadPagesToIndex, updateInIndex } from '../shared/search-engine.js';
 import { initializeAutoCapture } from './auto-capture.js';
 
 /**
@@ -9,22 +9,22 @@ import { initializeAutoCapture } from './auto-capture.js';
 async function initializeExtension() {
   try {
     console.log('正在初始化 FlexSearch Finder 擴充功能...');
-    
+
     // 初始化資料庫
     await initializeDB();
-    
+
     // 創建搜尋索引
     createSearchIndex();
-    
+
     // 載入現有資料到索引
     const allPages = await getAllPages();
     if (allPages.length > 0) {
       loadPagesToIndex(allPages);
     }
-    
+
     // 初始化自動捕獲功能
     initializeAutoCapture();
-    
+
     console.log('FlexSearch Finder 擴充功能初始化完成');
   } catch (error) {
     console.error('擴充功能初始化失敗:', error);
@@ -43,10 +43,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.error('處理頁面捕獲訊息時發生錯誤:', error);
         sendResponse({ success: false, error: error.message });
       });
-    
+
     return true; // 表示會異步回覆
   }
-  
+
   // 可以在這裡添加其他訊息處理邏輯
   return false;
 });
@@ -59,7 +59,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function handleManualCapture(pageData) {
   try {
     const result = await savePage(pageData);
-    
+
     if (result.success) {
       // 更新搜尋索引
       if (result.isUpdate) {
@@ -68,7 +68,7 @@ async function handleManualCapture(pageData) {
         addToIndex(result.page);
       }
     }
-    
+
     return result;
   } catch (error) {
     console.error('手動捕獲頁面時發生錯誤:', error);
@@ -88,14 +88,14 @@ chrome.action.onClicked.addListener((tab) => {
  */
 chrome.runtime.onInstalled.addListener((details) => {
   console.log('擴充功能已安裝/更新:', details.reason);
-  
+
   if (details.reason === 'install') {
     // 首次安裝時的處理
     console.log('歡迎使用 FlexSearch Finder！');
-    
+
     // 設置預設的自動捕獲選項
-    chrome.storage.local.set({ 
-      autoCaptureEnabled: true 
+    chrome.storage.local.set({
+      autoCaptureEnabled: true
     });
   } else if (details.reason === 'update') {
     // 更新時的處理

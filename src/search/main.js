@@ -1,7 +1,7 @@
 // search/main.js - 重構後的搜尋頁面主要邏輯
-import { initializeDB, getAllPages } from '../shared/database.js';
-import { createSearchIndex, loadPagesToIndex, search, highlightText } from '../shared/search-engine.js';
+import { getAllPages, initializeDB } from '../shared/database.js';
 import i18n from '../shared/i18n.js';
+import { createSearchIndex, highlightText, loadPagesToIndex, search } from '../shared/search-engine.js';
 
 let allPages = [];
 let isInitialized = false;
@@ -11,30 +11,30 @@ let isInitialized = false;
  */
 async function initializeSearchPage() {
   if (isInitialized) return;
-  
+
   try {
     console.log('正在初始化搜尋頁面...');
-    
+
     // Initialize i18n first and apply user language preference
     await i18n.init();
-    
+
     // Explicitly localize elements after i18n is initialized
     i18n.localizeElements();
-    
+
     console.log('Search page initialized with language:', i18n.getCurrentLocale());
-    
+
     // 初始化資料庫
     await initializeDB();
-    
+
     // 載入所有頁面資料
     allPages = await getAllPages();
-    
+
     // 創建並載入搜尋索引
     createSearchIndex();
     if (allPages.length > 0) {
       loadPagesToIndex(allPages);
     }
-    
+
     console.log(`搜尋頁面初始化完成，共載入 ${allPages.length} 筆記錄`);
     isInitialized = true;
   } catch (error) {
@@ -65,7 +65,7 @@ function showErrorMessage(message) {
 function showEmptyState(query) {
   const container = document.getElementById('results');
   if (!container) return;
-  
+
   if (query) {
     container.innerHTML = `
       <div class="empty-state">
@@ -91,12 +91,12 @@ function showEmptyState(query) {
 function renderResultItem(page, query) {
   const div = document.createElement('div');
   div.className = 'result-item';
-  
-  const contentPreview = page.excerpt || 
+
+  const contentPreview = page.excerpt ||
     (page.content ? (page.content.length > 200 ? page.content.substring(0, 200) + '...' : page.content) : '無內容預覽');
   const siteName = page.siteName || (page.url ? new URL(page.url).hostname : 'Unknown Site');
   const localViewId = `local-view-${page.id}`;
-  
+
   div.innerHTML = `
     <div class="result-header">
       <a href="#" class="result-title" data-local-view="${localViewId}">
@@ -122,7 +122,7 @@ function renderResultItem(page, query) {
       </div>
     </div>
   `;
-  
+
   // 綁定本地預覽事件
   div.querySelectorAll(`[data-local-view="${localViewId}"]`).forEach(link => {
     link.addEventListener('click', e => {
@@ -133,7 +133,7 @@ function renderResultItem(page, query) {
       }
     });
   });
-  
+
   return div;
 }
 
@@ -144,12 +144,12 @@ function renderResultItem(page, query) {
 function renderResults(query) {
   const container = document.getElementById('results');
   if (!container) return;
-  
+
   // 清空容器
   container.innerHTML = '';
-  
+
   let matchedPages;
-  
+
   if (!query || query.trim().length === 0) {
     // 顯示所有頁面
     matchedPages = [...allPages];
@@ -158,22 +158,22 @@ function renderResults(query) {
     const resultIds = search(query.trim());
     matchedPages = allPages.filter(page => resultIds.includes(page.id));
   }
-  
+
   // 檢查是否有結果
   if (matchedPages.length === 0) {
     showEmptyState(query);
     return;
   }
-  
+
   // 按最新瀏覽時間排序（由新到舊）
   matchedPages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  
+
   // 渲染每個結果
   matchedPages.forEach(page => {
     const resultElement = renderResultItem(page, query);
     container.appendChild(resultElement);
   });
-  
+
   // 顯示結果統計
   if (query) {
     const statsDiv = document.createElement('div');
@@ -193,11 +193,11 @@ function setupSearchInput() {
     console.error('找不到搜尋輸入框元素');
     return;
   }
-  
+
   // 檢查 URL 參數中是否有預設搜尋關鍵字
   const urlParams = new URLSearchParams(window.location.search);
   const queryParam = urlParams.get('q');
-  
+
   if (queryParam) {
     searchInput.value = queryParam;
     renderResults(queryParam);
@@ -205,12 +205,12 @@ function setupSearchInput() {
     // 預設顯示所有頁面
     renderResults('');
   }
-  
+
   // 監聽輸入事件
   searchInput.addEventListener('input', (e) => {
     renderResults(e.target.value);
   });
-  
+
   // 讓搜尋框獲得焦點
   searchInput.focus();
 }

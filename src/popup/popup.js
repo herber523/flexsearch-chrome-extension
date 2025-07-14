@@ -1,6 +1,6 @@
 // popup/popup.js - 重構後的彈出視窗功能模組
-import { SKIP_URLS } from '../utils/constants.js';
 import i18n from '../shared/i18n.js';
+import { SKIP_URLS } from '../utils/constants.js';
 
 /**
  * 檢查 URL 是否應該跳過
@@ -20,9 +20,9 @@ function showStatusMessage(message, type = 'success') {
   const statusEl = document.createElement('div');
   statusEl.className = `${type}-msg`;
   statusEl.textContent = message;
-  
+
   document.body.appendChild(statusEl);
-  
+
   // 2秒後移除訊息
   setTimeout(() => {
     statusEl.remove();
@@ -40,9 +40,9 @@ function extractPageContent() {
     const description = document.querySelector('meta[name="description"]')?.content || '';
     const url = window.location.href;
     const siteName = new URL(url).hostname;
-    
+
     const words = content ? content.split(/\s+/).filter(w => w.length > 0) : [];
-    
+
     return {
       title: title.trim(),
       content: content.trim(),
@@ -77,7 +77,7 @@ async function handleManualCapture(currentTab) {
 
   const captureBtn = document.getElementById('capture-page');
   const originalText = captureBtn.textContent;
-  
+
   // 顯示處理中狀態
   captureBtn.textContent = i18n.getMessage('processing');
   captureBtn.disabled = true;
@@ -137,8 +137,8 @@ function handleQuickSearch(query) {
  * 開啟完整搜尋頁面
  */
 function openSearchPage() {
-  chrome.tabs.create({ 
-    url: chrome.runtime.getURL('index.html') 
+  chrome.tabs.create({
+    url: chrome.runtime.getURL('index.html')
   });
 }
 
@@ -146,8 +146,8 @@ function openSearchPage() {
  * 開啟設定頁面
  */
 function openSettingsPage() {
-  chrome.tabs.create({ 
-    url: chrome.runtime.getURL('settings.html') 
+  chrome.tabs.create({
+    url: chrome.runtime.getURL('settings.html')
   });
 }
 
@@ -158,15 +158,15 @@ async function initializePopup() {
   try {
     // Initialize i18n first and apply user language preference
     await i18n.init();
-    
+
     // Explicitly localize elements after i18n is initialized
     i18n.localizeElements();
-    
+
     console.log('Popup initialized with language:', i18n.getCurrentLocale());
   } catch (error) {
     console.error('Failed to initialize i18n:', error);
   }
-  
+
   // 開啟搜尋頁面按鈕
   const openSearchBtn = document.getElementById('open-search-page');
   if (openSearchBtn) {

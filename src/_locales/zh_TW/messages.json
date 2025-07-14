@@ -7,7 +7,6 @@
     "message": "智慧全文搜尋瀏覽歷史，支援中日韓及西方語言",
     "description": "Extension description"
   },
-  
   "search": {
     "message": "搜尋",
     "description": "Search button or label"
@@ -52,7 +51,6 @@
     "message": "成功",
     "description": "Success message"
   },
-
   "quickSearch": {
     "message": "快速搜尋",
     "description": "Quick search label in popup"
@@ -95,7 +93,6 @@
     "message": "處理中...",
     "description": "Processing indicator"
   },
-
   "searchPageTitle": {
     "message": "搜尋歷史",
     "description": "Search page title"
@@ -160,7 +157,6 @@
     "message": "所有資料已清除",
     "description": "Success message after clearing data"
   },
-
   "settingsPageTitle": {
     "message": "設定",
     "description": "Settings page title"
@@ -189,7 +185,6 @@
     "message": "自動擷取已停用",
     "description": "Auto capture disabled message"
   },
-  
   "domainFiltering": {
     "message": "域名過濾",
     "description": "Domain filtering section title"
@@ -310,7 +305,6 @@
     "message": "白名單",
     "description": "Whitelist term"
   },
-
   "databaseManagement": {
     "message": "資料庫管理",
     "description": "Database management section title"
@@ -377,7 +371,6 @@
     "message": "返回搜尋頁面",
     "description": "Back to search page button"
   },
-
   "languageSettings": {
     "message": "語言設定",
     "description": "Language settings section title"
@@ -408,7 +401,6 @@
     "message": "請重新啟動擴展以套用語言變更",
     "description": "Restart required message"
   },
-
   "loadSettingsError": {
     "message": "載入設定時發生錯誤：$ERROR$",
     "description": "Load settings error message",

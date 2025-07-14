@@ -1,4 +1,4 @@
-feat: Complete i18n integration and project cleanup
+feat: Complete i18n integration and project cleanup + Critical fixes
 
 ## 🌐 Complete Internationalization Implementation
 
@@ -16,6 +16,38 @@ feat: Complete i18n integration and project cleanup
 - Updated manifest.json to use Chrome extension i18n format
 - Built-in fallback mechanism for missing translations
 
+### 🔧 Critical Fixes Applied:
+
+#### 1. Fixed i18n Parameter Type Error
+- **Issue**: `TypeError: substitutions.forEach is not a function` when calling `i18n.getMessage()`
+- **Root cause**: `formatMessage()` expected array but received string/number parameters
+- **Fix**: Updated `formatMessage()` to handle arrays, strings, numbers, and null values
+- **Files**: `src/shared/i18n.js` - Enhanced parameter type handling
+
+#### 1.1. Fixed i18n Placeholder Variable Substitution
+- **Issue**: Variables like `$TIME$`, `$COUNT$`, `$DATE$` not being replaced in search results
+- **Root cause**: Custom `formatMessage()` logic interfering with Chrome's i18n placeholder system
+- **Fix**: Prioritized Chrome's `i18n.getMessage()` API for proper placeholder handling
+- **Files**: `src/shared/i18n.js` - Improved message resolution priority
+
+#### 2. Fixed Whitelist Domain Filtering
+- **Issue**: Whitelist mode was not working in auto-capture functionality
+- **Root cause**: `shouldSkipUrl()` only checked blacklist, ignored filterMode and whitelist
+- **Fix**: Complete rewrite of domain filtering logic with proper whitelist/blacklist support
+- **Files**: `src/background/auto-capture.js` - Enhanced domain filtering system
+
+#### 3. Fixed ContentScript Loading Path
+- **Issue**: `Could not load file: 'content/contentScript.js'` error
+- **Root cause**: Mismatch between manifest.json and actual file structure
+- **Fix**: Updated manifest.json and vite.config.js to use correct paths
+- **Files**: `public/manifest.json`, `vite.config.js` - Path alignment
+
+#### 4. Fixed HTML Script Path References
+- **Issue**: HTML files referencing `../shared/i18n.js` but built file is at `i18n.js`
+- **Root cause**: Static script paths in HTML not updated for build output structure
+- **Fix**: Updated all HTML files to reference correct build paths
+- **Files**: `src/popup/popup.html`, `src/settings/settings.html`, `src/search/index.html` - Script path corrections
+
 ### Project Structure Improvements:
 - Cleaned up legacy and duplicate files from root and src directories
 - Reorganized files into proper directory structure
@@ -26,10 +58,13 @@ feat: Complete i18n integration and project cleanup
 ### Files Changed:
 - ✅ Added: `src/_locales/` directory with translations for en, zh_TW, ja
 - ✅ Added: `src/shared/i18n.js` - Complete i18n management system
+- ✅ Fixed: `src/shared/i18n.js` - Parameter type handling
+- ✅ Fixed: `src/background/auto-capture.js` - Whitelist domain filtering
+- ✅ Fixed: `public/manifest.json` - ContentScript path reference
+- ✅ Fixed: `vite.config.js` - Build output structure
+- ✅ Fixed: HTML files - Script path references (`popup.html`, `settings.html`, `index.html`)
 - ✅ Updated: All HTML files with `data-i18n` attributes
 - ✅ Updated: All JavaScript files to use i18n system
-- ✅ Updated: `public/manifest.json` to use Chrome i18n format
-- ✅ Updated: `vite.config.js` for correct build paths
 - ✅ Removed: Legacy duplicate files and test artifacts
 
 ### Build & Deployment:
@@ -43,5 +78,7 @@ feat: Complete i18n integration and project cleanup
 - Consistent language across all extension pages
 - Professional translations for all UI elements
 - Proper error messages in user's preferred language
+- Whitelist/blacklist domain filtering works correctly
+- Auto-capture respects user's domain preferences
 
-This completes the comprehensive i18n integration for the FlexSearch Chrome extension, providing a professional multilingual experience ready for international users.
+This completes the comprehensive i18n integration with critical bug fixes for the FlexSearch Chrome extension, providing a professional multilingual experience ready for international users.

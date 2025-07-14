@@ -7,7 +7,6 @@
     "message": "CJKと西欧言語をサポートしたインテリジェントな全文検索ブラウジング履歴",
     "description": "Extension description"
   },
-  
   "search": {
     "message": "検索",
     "description": "Search button or label"
@@ -52,7 +51,6 @@
     "message": "成功",
     "description": "Success message"
   },
-
   "quickSearch": {
     "message": "クイック検索",
     "description": "Quick search label in popup"
@@ -95,7 +93,6 @@
     "message": "処理中...",
     "description": "Processing indicator"
   },
-
   "searchPageTitle": {
     "message": "履歴検索",
     "description": "Search page title"
@@ -160,7 +157,6 @@
     "message": "すべてのデータがクリアされました",
     "description": "Success message after clearing data"
   },
-
   "settingsPageTitle": {
     "message": "設定",
     "description": "Settings page title"
@@ -189,7 +185,6 @@
     "message": "自動キャプチャが無効になりました",
     "description": "Auto capture disabled message"
   },
-  
   "domainFiltering": {
     "message": "ドメインフィルタリング",
     "description": "Domain filtering section title"
@@ -310,7 +305,6 @@
     "message": "ホワイトリスト",
     "description": "Whitelist term"
   },
-
   "databaseManagement": {
     "message": "データベース管理",
     "description": "Database management section title"
@@ -377,7 +371,6 @@
     "message": "検索ページに戻る",
     "description": "Back to search page button"
   },
-
   "languageSettings": {
     "message": "言語設定",
     "description": "Language settings section title"
@@ -408,7 +401,6 @@
     "message": "言語変更を適用するには拡張機能を再起動してください",
     "description": "Restart required message"
   },
-
   "loadSettingsError": {
     "message": "設定の読み込みエラー：$ERROR$",
     "description": "Load settings error message",
