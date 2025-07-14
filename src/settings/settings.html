@@ -266,6 +266,58 @@
     input:checked + .slider:before {
       transform: translateX(26px);
     }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+      transition: all 0.2s;
+    }
+
+    .radio-option:hover {
+      background: #f0f0f0;
+      border-color: #bbb;
+    }
+
+    .radio-option input[type="radio"] {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: #0077ff;
+    }
+
+    .radio-label {
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .radio-option input[type="radio"]:checked + .radio-label {
+      color: #0077ff;
+    }
+
+    .radio-option:has(input[type="radio"]:checked) {
+      background: #e8f2ff;
+      border-color: #0077ff;
+    }
+
+    .filter-mode-container {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
   </style>
 </head>
 <body>
@@ -292,12 +344,27 @@
       </div>
     </div>
 
-    <!-- Domain Blacklist -->
-    <div class="section">
+    <!-- Domain Filtering -->
+    <div class="section domain-section">
       <h2 class="section-title">🚫 網域黑名單</h2>
       <p class="section-description">
-        設定不要自動擷取內容的網域名稱。支援完整網域 (如: example.com) 或子網域 (如: *.example.com)
+        排除以下網域，其他網域都會被擷取
       </p>
+
+      <!-- Filter Mode Selection -->
+      <div class="filter-mode-container" style="margin-bottom: 20px;">
+        <h3 style="margin-bottom: 10px; font-size: 16px; color: #333;">過濾模式</h3>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="filterMode" value="blacklist" checked>
+            <span class="radio-label">黑名單模式 - 排除指定網域</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="filterMode" value="whitelist">
+            <span class="radio-label">白名單模式 - 只允許指定網域</span>
+          </label>
+        </div>
+      </div>
 
       <div class="domain-input-container">
         <input 

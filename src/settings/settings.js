@@ -3,7 +3,9 @@ import { openDB } from 'idb';
 class SettingsManager {
   constructor() {
     this.db = null;
+    this.filterMode = 'blacklist'; // 'blacklist' or 'whitelist'
     this.domainBlacklist = new Set();
+    this.domainWhitelist = new Set();
     this.init();
   }
 
@@ -29,15 +31,31 @@ class SettingsManager {
 
   async loadSettings() {
     try {
-      // Load auto-capture setting
-      const result = await chrome.storage.local.get(['autoCaptureEnabled', 'domainBlacklist']);
+      // Load settings with migration support
+      const result = await chrome.storage.local.get([
+        'autoCaptureEnabled', 
+        'filterMode', 
+        'domainBlacklist', 
+        'domainWhitelist'
+      ]);
       
+      // Migration for old data structure
+      if (result.domainBlacklist && !result.filterMode) {
+        this.filterMode = 'blacklist';
+        await chrome.storage.local.set({ filterMode: 'blacklist' });
+      } else {
+        this.filterMode = result.filterMode || 'blacklist';
+      }
+
       const autoCaptureToggle = document.getElementById('auto-capture-toggle');
       autoCaptureToggle.checked = !!result.autoCaptureEnabled;
 
-      // Load domain blacklist
+      // Load domain lists
       this.domainBlacklist = new Set(result.domainBlacklist || []);
-      this.renderDomainList();
+      this.domainWhitelist = new Set(result.domainWhitelist || []);
+      
+      this.updateUIForCurrentMode();
+      this.renderCurrentDomainList();
     } catch (error) {
       this.showError('載入設定時發生錯誤: ' + error.message);
     }
@@ -47,6 +65,15 @@ class SettingsManager {
     // Auto-capture toggle
     document.getElementById('auto-capture-toggle').addEventListener('change', (e) => {
       this.saveAutoCaptureSetting(e.target.checked);
+    });
+
+    // Filter mode radio buttons
+    document.querySelectorAll('input[name="filterMode"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          this.switchFilterMode(e.target.value);
+        }
+      });
     });
 
     // Domain management
@@ -88,6 +115,47 @@ class SettingsManager {
     }
   }
 
+  async switchFilterMode(newMode) {
+    if (newMode === this.filterMode) return;
+
+    const confirmMsg = `切換到${newMode === 'whitelist' ? '白名單' : '黑名單'}模式？`;
+    if (!confirm(confirmMsg)) {
+      // Revert radio button
+      document.querySelector(`input[name="filterMode"][value="${this.filterMode}"]`).checked = true;
+      return;
+    }
+
+    this.filterMode = newMode;
+    await chrome.storage.local.set({ filterMode: newMode });
+    this.updateUIForCurrentMode();
+    this.renderCurrentDomainList();
+    this.showSuccess(`已切換到${newMode === 'whitelist' ? '白名單' : '黑名單'}模式`);
+  }
+
+  updateUIForCurrentMode() {
+    // Update radio buttons
+    document.querySelector(`input[name="filterMode"][value="${this.filterMode}"]`).checked = true;
+    
+    // Update section title and description
+    const isWhitelist = this.filterMode === 'whitelist';
+    const sectionTitle = document.querySelector('.domain-section .section-title');
+    const description = document.querySelector('.domain-section .section-description');
+    
+    sectionTitle.textContent = isWhitelist ? '🎯 網域白名單' : '🚫 網域黑名單';
+    description.textContent = isWhitelist 
+      ? '只擷取以下網域的內容，其他網域將被忽略' 
+      : '排除以下網域，其他網域都會被擷取';
+  }
+
+  getCurrentDomainSet() {
+    return this.filterMode === 'whitelist' ? this.domainWhitelist : this.domainBlacklist;
+  }
+
+  renderCurrentDomainList() {
+    const currentSet = this.getCurrentDomainSet();
+    this.renderDomainList(currentSet);
+  }
+
   async addDomain() {
     const input = document.getElementById('domain-input');
     const domain = input.value.trim().toLowerCase();
@@ -103,41 +171,50 @@ class SettingsManager {
       return;
     }
 
-    if (this.domainBlacklist.has(domain)) {
-      this.showError('此網域已在黑名單中');
+    const currentSet = this.getCurrentDomainSet();
+    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
+
+    if (currentSet.has(domain)) {
+      this.showError(`此網域已在${modeText}中`);
       return;
     }
 
-    this.domainBlacklist.add(domain);
-    await this.saveDomainBlacklist();
-    this.renderDomainList();
+    currentSet.add(domain);
+    await this.saveDomainSettings();
+    this.renderCurrentDomainList();
     input.value = '';
-    this.showSuccess(`已新增 "${domain}" 到黑名單`);
+    this.showSuccess(`已新增 "${domain}" 到${modeText}`);
   }
 
   async removeDomain(domain) {
-    this.domainBlacklist.delete(domain);
-    await this.saveDomainBlacklist();
-    this.renderDomainList();
-    this.showSuccess(`已從黑名單移除 "${domain}"`);
+    const currentSet = this.getCurrentDomainSet();
+    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
+    
+    currentSet.delete(domain);
+    await this.saveDomainSettings();
+    this.renderCurrentDomainList();
+    this.showSuccess(`已從${modeText}移除 "${domain}"`);
   }
 
-  async saveDomainBlacklist() {
+  async saveDomainSettings() {
     try {
       await chrome.storage.local.set({ 
-        domainBlacklist: Array.from(this.domainBlacklist) 
+        domainBlacklist: Array.from(this.domainBlacklist),
+        domainWhitelist: Array.from(this.domainWhitelist)
       });
     } catch (error) {
-      this.showError('儲存黑名單時發生錯誤: ' + error.message);
+      this.showError('儲存域名設定時發生錯誤: ' + error.message);
     }
   }
 
-  renderDomainList() {
+  renderDomainList(domainSet) {
     const container = document.getElementById('domain-list');
     const emptyState = document.getElementById('empty-state');
+    const modeText = this.filterMode === 'whitelist' ? '白名單' : '黑名單';
 
-    if (this.domainBlacklist.size === 0) {
+    if (domainSet.size === 0) {
       emptyState.style.display = 'block';
+      emptyState.textContent = `尚未新增任何網域到${modeText}`;
       // Remove all domain items
       container.querySelectorAll('.domain-item').forEach(item => item.remove());
       return;
@@ -149,7 +226,7 @@ class SettingsManager {
     container.querySelectorAll('.domain-item').forEach(item => item.remove());
 
     // Add domain items
-    Array.from(this.domainBlacklist).sort().forEach(domain => {
+    Array.from(domainSet).sort().forEach(domain => {
       const item = document.createElement('div');
       item.className = 'domain-item';
       item.innerHTML = `

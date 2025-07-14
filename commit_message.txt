@@ -1,8 +1,36 @@
-fix: Resolve build and path issues after merge
+feat: Implement whitelist/blacklist domain filtering system
 
-This commit addresses several issues encountered after merging remote changes:
-- Corrected import paths for `contentScript.js` and `tokenizer.js` in `vite.config.js` and `src/db.js` respectively, as these files were moved in the remote branch.
-- Updated `vite.config.js` to correctly copy HTML files from their new locations (`src/popup/popup.html`, `src/search/index.html`, `src/settings/settings.html`) to the `dist` root.
-- Adjusted `src/popup.js` to correctly reference `index.html` and to align with the new settings page button ID (`open-settings`).
-- Removed the `auto-capture-toggle` UI and logic from `popup.html` and `popup.js` as this functionality is now managed in the dedicated settings page.
-- Ensured `src/popup/popup.html` reflects the remote UI style after merge.
+Complete domain filtering system with mutually exclusive blacklist and whitelist modes for precise content capture control.
+
+**Key Features:**
+• Added filter mode selection: blacklist mode (exclude specified domains) and whitelist mode (allow only specified domains)
+• Support for wildcard domain matching (*.example.com)
+• Smart domain matching algorithm supporting full domains and subdomains
+• Confirmation prompts when switching modes to prevent accidental operations
+• Complete data migration logic ensuring smooth upgrades from older versions
+
+**Technical Implementation:**
+• Refactored background.js auto-capture logic with integrated filtering mechanism
+• Updated settings.js to support dual-mode domain management and dynamic UI updates
+• Added settings.html filter mode selection interface with responsive design
+• Migrated to chrome.storage.local for improved reliability
+• Enhanced error handling and user feedback mechanisms
+
+**User Experience:**
+• Modern UI design supporting mode switching and domain management
+• Real-time visual feedback and status updates
+• Clear operation prompts and error handling
+• Keyboard shortcut support (Enter to add domains)
+
+**Modified Files:**
+• src/background.js - Added shouldFilterUrl function and complete filtering logic
+• src/settings/settings.js - Refactored for dual-mode support with mode switching
+• src/settings/settings.html - Added filter mode selection UI and related styles
+• .vscode/tasks.json - Added build task configuration
+
+**Testing Status:**
+• Build tests passed ✓
+• Functional logic verified ✓
+• UI responsiveness tested ✓
+
+This update significantly enhances the extension's usability, allowing users to precisely control which websites are automatically captured, whether excluding specific sites (blacklist) or allowing only specific sites (whitelist).
