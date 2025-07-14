@@ -47,8 +47,28 @@ jobs:
             exit 1
           fi
           
-          if [ ! -f "dist/contentScript.js" ]; then
-            echo "錯誤: contentScript.js 不存在"
+          if [ ! -f "dist/content/contentScript.js" ]; then
+            echo "錯誤: content/contentScript.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/main.js" ]; then
+            echo "錯誤: main.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/settings.js" ]; then
+            echo "錯誤: settings.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/i18n.js" ]; then
+            echo "錯誤: i18n.js 不存在"
+            exit 1
+          fi
+          
+          if [ ! -d "dist/_locales" ]; then
+            echo "錯誤: _locales 目錄不存在"
             exit 1
           fi
           
